@@ -19,7 +19,13 @@ class CheckResultCliFormatter
 
     public function formatCheckResult(SymfonyStyle $io, CheckResult $result): void
     {
-        $message = $this->translator->trans('check_result.type.' . $result->getType(), $result->getData());
+        $message = $this->translator->trans(
+            'check_result.type.' . $result->getType(),
+            array_combine(
+                array_map(static function (string $key) { return '%' . $key . '%'; }, array_keys($result->getData())),
+                array_values($result->getData())
+            )
+        );
 
         switch ($result->getLevel()) {
             case 'error':

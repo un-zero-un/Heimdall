@@ -3,3 +3,7 @@ check_result:
         site_is_up: Site is up
         site_is_down: 'Site is down'
         site_status_is_errored: 'Site status is errored (status code : %status_code%)'
+
+        selector_not_found: Selector "%selector%" was not found in page "%page%"
+        text_not_found: Text "%expected%" was not found in page "%page%" at selector "%selector%"
+        page_displays_correctly: Page "%page%" displays correctly
