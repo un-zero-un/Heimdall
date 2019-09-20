@@ -4,18 +4,12 @@ services:
     php:
         networks:   [ heimdall ]
         build:      { target: php, context: . }
-        depends_on: [ database, redis ]
+        depends_on: [ database ]
 
     web:
         networks:   [ heimdall ]
         build:      { target: nginx, context: . }
         depends_on: [ php ]
-
-    redis:
-        image:    redis:5-alpine
-        command:  redis-server --appendonly yes
-        networks: [ heimdall ]
-        volumes:  [ 'redis-data:/data' ]
 
     database:
         image:    postgres:11-alpine
@@ -28,7 +22,6 @@ services:
 
 volumes:
     database-data: ~
-    redis-data:    ~
 
 networks:
     heimdall: ~

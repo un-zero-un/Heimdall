@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Behavior\HasTimestamp;
+use App\Behavior\Impl\HasTimestampImpl;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,13 +16,16 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\SiteRepository")
  * @ORM\Table(
  *      uniqueConstraints={@ORM\UniqueConstraint(name="site_slug_unique",columns={"slug"})},
  * )
  */
-class Site
+class Site implements HasTimestamp
 {
+    use HasTimestampImpl;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
@@ -60,6 +65,8 @@ class Site
         $this->name             = $name;
         $this->url              = $url;
         $this->configuredChecks = new ArrayCollection;
+
+        $this->initialize();
     }
 
     public function getId(): UuidInterface

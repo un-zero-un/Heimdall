@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Behavior\HasTimestamp;
+use App\Behavior\Impl\HasTimestampImpl;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity()
  * @ORM\Table()
  */
-class ConfiguredCheck
+class ConfiguredCheck implements HasTimestamp
 {
+    use HasTimestampImpl;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
@@ -43,6 +48,8 @@ class ConfiguredCheck
         $this->id    = Uuid::uuid4();
         $this->site  = $site;
         $this->check = $check;
+
+        $this->initialize();
     }
 
     public function getId(): UuidInterface
