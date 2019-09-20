@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+    php:
+        networks:   [ heimdall ]
+        build:      { target: php, context: . }
+        depends_on: [ database, redis ]
+
+    web:
+        networks:   [ heimdall ]
+        build:      { target: nginx, context: . }
+        depends_on: [ php ]
+
+    redis:
+        image:    redis:5-alpine
+        command:  redis-server --appendonly yes
+        networks: [ heimdall ]
+        volumes:  [ 'redis-data:/data' ]
+
+    database:
+        image:    postgres:11-alpine
+        volumes:  [ 'database-data:/var/lib/postgresql/data' ]
+        networks: [ heimdall ]
+        environment:
+            - POSTGRES_DB=heimdall
+            - POSTGRES_USER=heimdall
+            - POSTGRES_PASSWORD=heimdall
+
+volumes:
+    database-data: ~
+    redis-data:    ~
+
+networks:
+    heimdall: ~

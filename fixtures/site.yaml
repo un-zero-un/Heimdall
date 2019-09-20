@@ -1,0 +1,6 @@
+App\Model\Site:
+    site__1z1:
+        __construct: [ 'Un zéro un - site de l''agence', 'https://www.un-zero-un.fr' ]
+
+    site__helliogreen:
+        __construct: [ 'Helliogreen', 'https://www.helliogreen.com' ]

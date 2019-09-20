@@ -1,0 +1,5 @@
+check_result:
+    type:
+        site_is_up: Site is up
+        site_is_down: 'Site is down'
+        site_status_is_errored: 'Site status is errored (status code : %status_code%)'

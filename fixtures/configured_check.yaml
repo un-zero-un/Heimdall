@@ -1,0 +1,18 @@
+App\Model\ConfiguredCheck:
+    configured_check__1z1_is_up:
+        __construct: [ '@site__1z1' , 'App\Checker\IsUpChecker']
+    configured_check__1z1_page_displays_correctly_homepage:
+        __construct: [ '@site__1z1' , 'App\Checker\IsUpChecker']
+        config:
+            page: '/'
+            selector: h2
+            expected: L'agence de com
+    configured_check__1z1_page_displays_correctly_team:
+        __construct: [ '@site__1z1' , 'App\Checker\IsUpChecker']
+        config:
+            page: '/l-equipe'
+            selector: h3 > .teamMember__name
+            expected: Sacha
+
+    configured_check__helliogreen_is_up:
+        __construct: [ '@site__helliogreen' , 'App\Checker\IsUpChecker']
