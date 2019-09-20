@@ -7,3 +7,6 @@ check_result:
         selector_not_found: Selector "%selector%" was not found in page "%page%"
         text_not_found: Text "%expected%" was not found in page "%page%" at selector "%selector%"
         page_displays_correctly: Page "%page%" displays correctly
+
+front:
+    main_title: Heimdall - Watch at your websites

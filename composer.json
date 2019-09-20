@@ -19,6 +19,7 @@
         "symfony/orm-pack": "*",
         "symfony/translation": "^4.3.0",
         "symfony/validator": "*",
+        "symfony/webpack-encore-bundle": "^1.6",
         "symfony/yaml": "*"
     },
     "require-dev": {

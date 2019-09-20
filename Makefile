@@ -12,3 +12,13 @@ db: ## Opens a Postgres console
 
 psalm:
 	docker-compose exec php ./vendor/bin/psalm
+
+assets_serve: ## Serve the assets with HMR
+	docker-compose exec -T php node ./node_modules/.bin/encore dev-server --port 8080 --host 0.0.0.0
+
+assets_watch: ## Build the assets and watch them. No HMR
+	docker-compose exec -T php node ./node_modules/.bin/encore dev --watch
+
+assets_build: ## Build production assets
+	docker-compose exec -T php node ./node_modules/.bin/encore production
+
