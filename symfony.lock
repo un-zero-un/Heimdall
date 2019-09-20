@@ -5,6 +5,23 @@
     "amphp/byte-stream": {
         "version": "v1.6.1"
     },
+    "api-platform/api-pack": {
+        "version": "v1.2.0"
+    },
+    "api-platform/core": {
+        "version": "2.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.1",
+            "ref": "18727d8f229306860b46955f438e1897421da689"
+        },
+        "files": [
+            "config/packages/api_platform.yaml",
+            "config/routes/api_platform.yaml",
+            "src/Entity/.gitignore"
+        ]
+    },
     "behat/transliterator": {
         "version": "1.2-dev"
     },
@@ -120,6 +137,9 @@
     "felixfbecker/language-server-protocol": {
         "version": "v1.4.0"
     },
+    "fig/link-util": {
+        "version": "1.0.0"
+    },
     "fzaninotto/faker": {
         "version": "v1.8.0"
     },
@@ -162,6 +182,18 @@
             "config/packages/test/nelmio_alice.yaml"
         ]
     },
+    "nelmio/cors-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "6e1f64cc0f55362be49764634e8f14ce34a033c6"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
+        ]
+    },
     "netresearch/jsonmapper": {
         "version": "v1.6.0"
     },
@@ -191,6 +223,9 @@
     },
     "psr/container": {
         "version": "1.0.x-dev"
+    },
+    "psr/link": {
+        "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.1.x-dev"
@@ -233,6 +268,9 @@
         "files": [
             "config/packages/stof_doctrine_extensions.yaml"
         ]
+    },
+    "symfony/asset": {
+        "version": "v4.3.4"
     },
     "symfony/browser-kit": {
         "version": "5.0-dev"
@@ -294,6 +332,9 @@
     },
     "symfony/event-dispatcher-contracts": {
         "version": "1.1-dev"
+    },
+    "symfony/expression-language": {
+        "version": "v4.3.4"
     },
     "symfony/filesystem": {
         "version": "5.0-dev"
@@ -429,6 +470,30 @@
             "config/routes.yaml"
         ]
     },
+    "symfony/security-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "e5a0228251d1dd2bca4c8ef918e14423c06db625"
+        },
+        "files": [
+            "config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v4.3.4"
+    },
+    "symfony/security-csrf": {
+        "version": "v4.3.4"
+    },
+    "symfony/security-guard": {
+        "version": "v4.3.4"
+    },
+    "symfony/security-http": {
+        "version": "v4.3.4"
+    },
     "symfony/serializer": {
         "version": "v4.3.4"
     },
@@ -493,6 +558,9 @@
     "symfony/var-exporter": {
         "version": "5.0-dev"
     },
+    "symfony/web-link": {
+        "version": "v4.3.4"
+    },
     "symfony/web-profiler-bundle": {
         "version": "3.3",
         "recipe": {
@@ -533,6 +601,9 @@
     },
     "webmozart/path-util": {
         "version": "2.3.0"
+    },
+    "willdurand/negotiation": {
+        "version": "v2.3.1"
     },
     "zendframework/zend-code": {
         "version": "3.4.x-dev"

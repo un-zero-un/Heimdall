@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Behavior\Impl;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\HasLifecycleCallbacks()
@@ -12,12 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
 trait HasTimestampImpl
 {
     /**
-     * @ORM\Column(type="date_immutable")
+     * @Groups({"timestamp"})
+     *
+     * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\Column(type="date_immutable")
+     * @Groups({"timestamp"})
+     *
+     * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeImmutable $updatedAt;
 

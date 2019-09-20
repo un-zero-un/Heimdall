@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,9 +15,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Util\Urlizer;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ApiResource(
+ *      collectionOperations={"get": {"normalization_context": {"groups": {"get_sites", "timestamp"}}}},
+ *      itemOperations={"get": {"normalization_context": {"groups": {"get_site", "timestamp"}}}}
+ * )
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\SiteRepository")
  * @ORM\Table(
@@ -27,6 +34,7 @@ class Site implements HasTimestamp
     use HasTimestampImpl;
 
     /**
+     * @Groups({"get_sites", "get_site"})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="uuid")
@@ -34,18 +42,21 @@ class Site implements HasTimestamp
     private UuidInterface $id;
 
     /**
+     * @Groups({"get_sites", "get_site"})
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
     private string $name;
 
     /**
+     * @Groups({"get_sites", "get_site"})
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(type="string")
      */
     private string $slug;
 
     /**
+     * @Groups({"get_sites", "get_site"})
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
@@ -54,9 +65,17 @@ class Site implements HasTimestamp
     /**
      * @ORM\OneToMany(targetEntity=ConfiguredCheck::class, mappedBy="site")
      *
-     * @var Collection<int, ConfiguredCheck>
+     * @var Collection<ConfiguredCheck>
      */
     private Collection $configuredChecks;
+
+    /**
+     * @ApiSubresource()
+     * @ORM\OneToMany(targetEntity=Run::class, mappedBy="site")
+     *
+     * @var Collection<Run>
+     */
+    private Collection $runs;
 
     public function __construct(string $name, string $url)
     {
@@ -65,6 +84,7 @@ class Site implements HasTimestamp
         $this->name             = $name;
         $this->url              = $url;
         $this->configuredChecks = new ArrayCollection;
+        $this->runs             = new ArrayCollection;
 
         $this->initialize();
     }
@@ -90,10 +110,18 @@ class Site implements HasTimestamp
     }
 
     /**
-     * @return Collection<int, ConfiguredCheck>
+     * @return Collection<ConfiguredCheck>
      */
     public function getConfiguredChecks(): Collection
     {
         return $this->configuredChecks;
+    }
+
+    /**
+     * @return Collection<Run>
+     */
+    public function getRuns(): Collection
+    {
+        return $this->runs;
     }
 }
