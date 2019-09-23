@@ -30,7 +30,7 @@ class Run implements HasTimestamp
     use HasTimestampImpl;
 
     /**
-     * @Groups({"get_runs_for_site", "get_run"})
+     * @Groups({"get_runs_for_site", "get_run", "get_sites", "get_site"})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="uuid")
@@ -86,7 +86,7 @@ class Run implements HasTimestamp
     }
 
     /**
-     * @Groups({"get_runs_for_site", "get_run"})
+     * @Groups({"get_runs_for_site", "get_run", "get_sites", "get_site"})
      */
     public function getLowerResultLevel(): string
     {

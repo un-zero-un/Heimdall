@@ -71,6 +71,7 @@ class Site implements HasTimestamp
 
     /**
      * @ApiSubresource()
+     * @ORM\OrderBy({"createdAt": "DESC"})
      * @ORM\OneToMany(targetEntity=Run::class, mappedBy="site")
      *
      * @var Collection<Run>
@@ -123,5 +124,17 @@ class Site implements HasTimestamp
     public function getRuns(): Collection
     {
         return $this->runs;
+    }
+
+    /**
+     * @Groups({"get_sites", "get_site"})
+     */
+    public function getLastRun(): ?Run
+    {
+        if (0 === count ($this->getRuns())) {
+            return null;
+        }
+
+        return $this->getRuns()->first();
     }
 }
