@@ -19,7 +19,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 *           "api_sites_runs_get_subresource": {"normalization_context": {"groups": {"get_runs_for_site", "timestamp"}}}
  *      },
  *      collectionOperations={},
- *      itemOperations={"get"}
+ *      itemOperations={
+ *          "get": {"normalization_context": {"groups": {"get_run", "timestamp"}}}
+ *      }
  * )
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\RunRepository")
@@ -41,7 +43,7 @@ class Run implements HasTimestamp
      * @Groups({"get_run"})
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="runs")
      */
-    private Site $site;
+    private ?Site $site = null;
 
     /**
      * @Groups({"get_run"})

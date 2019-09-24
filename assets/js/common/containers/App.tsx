@@ -4,6 +4,7 @@ import {applyMiddleware, createStore, Middleware} from 'redux';
 import {createLogger} from 'redux-logger';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
+import ShowRun from '../../run/containers/ShowRun';
 import ShowSite from '../../site/containers/ShowSite';
 
 import Dashboard from './Dashboard';
@@ -26,6 +27,7 @@ export default function App() {
                     <Switch>
                         <Route exact path="/" component={Dashboard}/>
                         <Route exact path="/sites/:id" component={withRouteParams(ShowSite)} />
+                        <Route exact path="/runs/:id" component={withRouteParams(ShowRun)} />
                     </Switch>
                 </BrowserRouter>
             </Provider>

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
 import Title from '../../common/components/Title';
@@ -26,8 +27,13 @@ export default function ({id}: Props) {
                         <h2>Last run results :</h2>
 
                         {site.lastRun ? (
-                            `${site.lastRun.lowerResultLevel} at ${site.lastRun.createdAt}`
+                            <>
+                                {site.lastRun.lowerResultLevel} at {site.lastRun.createdAt}
+
+                                <Link to={`/runs/${site.lastRun.id}`}>Show run</Link>
+                            </>
                         ) : 'N/A'}
+
                     </div>
 
                     <div>

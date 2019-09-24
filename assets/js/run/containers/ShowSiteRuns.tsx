@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
 import {useSiteRuns} from '../hooks';
@@ -22,6 +23,7 @@ export default function ShowSiteRuns({siteId}: Props) {
                         <tr>
                             <th>Date</th>
                             <th>Result</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +31,9 @@ export default function ShowSiteRuns({siteId}: Props) {
                             <tr key={run.id}>
                                 <th>{run.createdAt}</th>
                                 <td>{run.lowerResultLevel}</td>
+                                <td>
+                                    <Link to={`/runs/${run.id}`}>Show run</Link>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

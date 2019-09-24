@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 namespace App\Checker;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 class CheckResult
 {
+    /**
+     * @Groups({"get_run"})
+     */
     private string $level;
 
+    /**
+     * @Groups({"get_run"})
+     */
     private string $type;
 
+    /**
+     * @Groups({"get_run"})
+     */
     private array $data;
 
     public function __construct(string $level, string $type, array $data = [])

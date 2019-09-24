@@ -34,7 +34,7 @@ class Site implements HasTimestamp
     use HasTimestampImpl;
 
     /**
-     * @Groups({"get_sites", "get_site"})
+     * @Groups({"get_sites", "get_site", "get_run"})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="uuid")
@@ -42,21 +42,21 @@ class Site implements HasTimestamp
     private UuidInterface $id;
 
     /**
-     * @Groups({"get_sites", "get_site"})
+     * @Groups({"get_sites", "get_site", "get_run"})
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
     private string $name;
 
     /**
-     * @Groups({"get_sites", "get_site"})
+     * @Groups({"get_sites", "get_site", "get_run"})
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(type="string")
      */
     private string $slug;
 
     /**
-     * @Groups({"get_sites", "get_site"})
+     * @Groups({"get_sites", "get_site", "get_run"})
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
