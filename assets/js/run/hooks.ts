@@ -1,15 +1,15 @@
 import {useState} from 'react';
 import {useAsyncEffect, useFetch} from '../common/hooks';
-import {SiteCollection} from '../types/site';
+import {RunCollection} from '../types/run';
 
-type ReturnValue = [
-    null | SiteCollection,
+type RunsData = [
+    null | RunCollection,
     boolean,
     boolean,
 ];
 
-export function useSites(): ReturnValue {
-    const [sites, setSites]     = useState<null | SiteCollection>(null);
+export function useSiteRuns(siteId: string): RunsData {
+    const [runs, setRuns]       = useState<null | RunCollection>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError]     = useState<boolean>(false);
 
@@ -19,10 +19,10 @@ export function useSites(): ReturnValue {
         try {
             setLoading(true);
 
-            const res  = await fetch('/sites');
+            const res  = await fetch(`/sites/${siteId}/runs`);
             const json = await res.json();
 
-            setSites(json);
+            setRuns(json);
         } catch (e) {
             setError(true);
         } finally {
@@ -30,5 +30,5 @@ export function useSites(): ReturnValue {
         }
     }, []);
 
-    return [sites, loading, error];
+    return [runs, loading, error];
 }

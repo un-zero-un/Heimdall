@@ -1,4 +1,5 @@
 index:
-    path: /
-    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
-    defaults: { template: index.html.twig }
+    path:         /{uri}
+    controller:   Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
+    defaults:     { template: index.html.twig }
+    requirements: { uri: .* }

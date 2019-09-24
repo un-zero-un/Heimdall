@@ -1,10 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux'
+import {Link} from 'react-router-dom';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
 
 import Title from '../../common/components/Title';
-import {useSites} from "../hooks";
+import {useSites} from "../../site/hooks";
 
 type StateProps = {};
 type DispatchProps = {};
@@ -26,7 +27,9 @@ function Dashboard({}: Props) {
                     <tbody>
                     {sites['hydra:member'].map(site => (
                         <tr key={site.id}>
-                            <th>{site.name}</th>
+                            <th>
+                                <Link to={`/sites/${site.id}`}>{site.name}</Link>
+                            </th>
                             <td>
                                 {site.lastRun ? site.lastRun.lowerResultLevel : 'N/A'}
                             </td>
