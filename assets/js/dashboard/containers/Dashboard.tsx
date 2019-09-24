@@ -1,5 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
+import Error from '../../common/components/Error';
+import Loader from '../../common/components/Loader';
 
 import Title from '../../common/components/Title';
 import {useSites} from "../hooks";
@@ -16,8 +18,8 @@ function Dashboard({}: Props) {
         <div>
             <Title>Dashboard</Title>
 
-            {loading && <div>Chargement...</div>}
-            {error && <div>Erreur !</div>}
+            <Error error={error} />
+            <Loader loading={loading} />
 
             {null !== sites && (
                 <table>
