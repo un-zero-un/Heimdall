@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *      mercure=true,
  *      collectionOperations={"get": {"normalization_context": {"groups": {"get_sites", "timestamp"}}}},
  *      itemOperations={"get": {"normalization_context": {"groups": {"get_site", "timestamp"}}}}
  * )

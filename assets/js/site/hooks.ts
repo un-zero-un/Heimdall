@@ -53,6 +53,12 @@ export function useSite(id: string): SiteData {
             const res  = await fetch(`/sites/${id}`);
             const json = await res.json();
 
+            const url = new URL('http://localhost/hub');
+            url.searchParams.append('topic', 'http://localhost/api/runs/{id}');
+            const eventSource     = new EventSource(url.href);
+            eventSource.onmessage = e => console.log(e);
+
+
             setSite(json);
         } catch (e) {
             setError(true);
