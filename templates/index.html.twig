@@ -4,9 +4,15 @@
         <meta charset="UTF-8">
         <title>{{ 'front.main_title' | trans }}</title>
         {{ encore_entry_link_tags('app') }}
+        {% for file in encore_entry_css_files('app') %}
+            <link rel="stylesheet" href="{{ preload(file, { as: 'style' }) }}" />
+        {% endfor %}
     </head>
     <body>
         <div id="heimdall"></div>
-        {{ encore_entry_script_tags('app') }}
+
+        {% for file in encore_entry_js_files('app') %}
+            <script src="{{ preload(file) }}" defer></script>
+        {% endfor %}
     </body>
 </html>
