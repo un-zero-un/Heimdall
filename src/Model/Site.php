@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Behavior\HasTimestamp;
@@ -71,6 +72,7 @@ class Site implements HasTimestamp
     private Collection $configuredChecks;
 
     /**
+     * @ApiProperty(push=true)
      * @ApiSubresource()
      * @ORM\OrderBy({"createdAt": "DESC"})
      * @ORM\OneToMany(targetEntity=Run::class, mappedBy="site")

@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import {useAsyncEffect, useFetch} from '../common/hooks';
+import {subscribeToMercureResource} from '../common/MercureProvider';
+import {Run} from '../types/run';
 import {Site, SiteCollection} from '../types/site';
 
 type SitesData = [
@@ -53,12 +55,6 @@ export function useSite(id: string): SiteData {
             const res  = await fetch(`/sites/${id}`);
             const json = await res.json();
 
-            const url = new URL('http://localhost/hub');
-            url.searchParams.append('topic', 'http://localhost/api/runs/{id}');
-            const eventSource     = new EventSource(url.href);
-            eventSource.onmessage = e => console.log(e);
-
-
             setSite(json);
         } catch (e) {
             setError(true);
@@ -66,6 +62,27 @@ export function useSite(id: string): SiteData {
             setLoading(false);
         }
     }, []);
+
+
+    subscribeToMercureResource<Run>('Run', run => {
+        if (!(site && run.site)) {
+            return;
+        }
+
+        if (run.site['@id'] !== site['@id']) {
+            return;
+        }
+
+        if (!site.lastRun) {
+            setSite({...site, lastRun: run});
+
+            return;
+        }
+
+        if ((new Date(run.createdAt)).getTime() > (new Date(site.lastRun.createdAt)).getTime()) {
+            setSite({...site, lastRun: run});
+        }
+    });
 
     return [site, loading, error];
 }

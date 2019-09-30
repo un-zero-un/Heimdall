@@ -1,4 +1,6 @@
 export type Model = {
+    '@context': string,
+    '@type': string,
     '@id': string,
     id: string,
 }

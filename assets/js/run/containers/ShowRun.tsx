@@ -14,7 +14,7 @@ export default function ShowRun({id}: Props) {
 
     return (
         <div>
-            <Title>{run ? `Run "${run.site && run.site.name}"` : ''}</Title>
+            <Title>Run "{run && run.site && run.site.name}"</Title>
 
             {run && run.site && <Link to={`/sites/${run.site.id}`}>Back to site</Link>}
 

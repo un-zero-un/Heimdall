@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *      mercure=true,
+ *      normalizationContext={"groups": {"get_run", "timestamp"}},
  *      subresourceOperations={
  *           "api_sites_runs_get_subresource": {"normalization_context": {"groups": {"get_runs_for_site", "timestamp"}}}
  *      },

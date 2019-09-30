@@ -6,6 +6,7 @@ import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import ShowRun from '../../run/containers/ShowRun';
 import ShowSite from '../../site/containers/ShowSite';
+import MercureProvider from '../MercureProvider';
 
 import Dashboard from './Dashboard';
 import reducer from '../../reducers';
@@ -22,14 +23,16 @@ export default function App() {
     return (
         <div>
             <Provider store={store}>
-                <BrowserRouter>
-                    <Link to="/"><h1>Heimdall</h1></Link>
-                    <Switch>
-                        <Route exact path="/" component={Dashboard}/>
-                        <Route exact path="/sites/:id" component={withRouteParams(ShowSite)} />
-                        <Route exact path="/runs/:id" component={withRouteParams(ShowRun)} />
-                    </Switch>
-                </BrowserRouter>
+                <MercureProvider topics={['http://localhost/api/runs/{id}']} hubUrl="http://localhost/hub">
+                    <BrowserRouter>
+                        <Link to="/"><h1>Heimdall</h1></Link>
+                        <Switch>
+                            <Route exact path="/" component={Dashboard}/>
+                            <Route exact path="/sites/:id" component={withRouteParams(ShowSite)}/>
+                            <Route exact path="/runs/:id" component={withRouteParams(ShowRun)}/>
+                        </Switch>
+                    </BrowserRouter>
+                </MercureProvider>
             </Provider>
         </div>
     );
