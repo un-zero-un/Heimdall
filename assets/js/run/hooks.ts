@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {useAsyncEffect, useFetch} from '../common/hooks';
+import {subscribeToMercureResource} from '../common/MercureProvider';
 import {Run, RunCollection} from '../types/run';
 
 type RunsData = [
@@ -29,6 +30,27 @@ export function useSiteRuns(siteId: string): RunsData {
             setLoading(false);
         }
     }, []);
+
+    subscribeToMercureResource<Run>('Run', run => {
+        if (!(runs && run.site)) {
+            return;
+        }
+
+        if (run.site['@id'] !== '/api/sites/' + siteId) {
+            return;
+        }
+
+        if (
+            0 === runs['hydra:totalItems'] ||
+            new Date(runs['hydra:member'][0].createdAt).getTime() < new Date(run.createdAt).getTime()
+        ) {
+            setRuns({
+                ...runs,
+                'hydra:totalItems': runs['hydra:totalItems'] + 1,
+                'hydra:member': [run, ...runs['hydra:member']]
+            });
+        }
+    });
 
     return [runs, loading, error];
 }
