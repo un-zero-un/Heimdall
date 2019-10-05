@@ -31,7 +31,12 @@ class DevEntrypointLookup implements EntrypointLookupInterface, IntegrityDataPro
     {
         return array_map(
             function (string $file) {
-                return str_replace('https://0.0.0.0:', 'https://' . $this->requestStack->getMasterRequest()->getHost() . ':', $file);
+                $request = $this->requestStack->getMasterRequest();
+                if (!$request) {
+                    return $file;
+                }
+
+                return str_replace('https://0.0.0.0:', 'https://' . $request->getHost() . ':', $file);
             },
             $this->decorated->getJavaScriptFiles($entryName)
         );
@@ -41,15 +46,20 @@ class DevEntrypointLookup implements EntrypointLookupInterface, IntegrityDataPro
     {
         return array_map(
             function (string $file) {
-                return str_replace('https://0.0.0.0:', 'https://' . $this->requestStack->getMasterRequest()->getHost() . ':', $file);
+                $request = $this->requestStack->getMasterRequest();
+                if (!$request) {
+                    return $file;
+                }
+
+                return str_replace('https://0.0.0.0:', 'https://' . $request->getHost() . ':', $file);
             },
             $this->decorated->getCssFiles($entryName)
         );
     }
 
-    public function reset()
+    public function reset(): void
     {
-        return $this->decorated->reset();
+        $this->decorated->reset();
     }
 
     public function getIntegrityData(): array
