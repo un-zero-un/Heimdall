@@ -8,5 +8,7 @@ check_result:
         text_not_found: Text "%expected%" was not found in page "%page%" at selector "%selector%"
         page_displays_correctly: Page "%page%" displays correctly
 
+        link_status_is_ok: Link to "%url%" is followable
+
 front:
     main_title: Heimdall - Watch at your websites
