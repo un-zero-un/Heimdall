@@ -23,7 +23,7 @@ export default function App() {
     return (
         <div>
             <Provider store={store}>
-                <MercureProvider topics={['http://localhost/api/runs/{id}']} hubUrl="http://localhost/hub">
+                <MercureProvider topics={['http://localhost/api/runs/{id}']} hubUrl="https://localhost/hub">
                     <BrowserRouter>
                         <Link to="/"><h1>Heimdall</h1></Link>
                         <Switch>

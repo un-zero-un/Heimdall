@@ -1,3 +1,5 @@
+docker/nginx/localhost.pem
+docker/nginx/localhost-key.pem
 
 ###> symfony/framework-bundle ###
 /.env.local

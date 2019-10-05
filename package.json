@@ -8,7 +8,7 @@
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
-        "dev-server": "encore dev-server",
+        "dev-server": "encore dev-server --host 0.0.0.0 --https --http2 --cert ./docker/nginx/localhost.pem --key ./docker/nginx/localhost-key.pem",
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"

@@ -12,3 +12,5 @@ webpack_encore:
     # To enable caching for the production environment, creating a webpack_encore.yaml in the config/packages/prod directory with this value set to true
     # Available in version 1.2
     #cache: false
+    preload: true
+    strict_mode: true
