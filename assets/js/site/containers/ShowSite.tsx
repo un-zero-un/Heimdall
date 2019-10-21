@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React from 'react';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
+import ResultLevel from '../../common/components/ResultLevel';
 import Title from '../../common/components/Title';
 import ShowSiteRuns from '../../run/containers/ShowSiteRuns';
 import {useSite} from '../hooks';
@@ -11,41 +11,23 @@ type Props = {
 };
 
 export default function ({id}: Props) {
-    const [site, loading, error]        = useSite(id);
-    const [runsVisible, setRunsVisible] = useState(false);
+    const [site, loading, error] = useSite(id);
 
     return (
         <div>
-            <Title>{site ? `Site "${site.name}"` : ''}</Title>
+            <Title>{
+                site ? (
+                    <>
+                        Site {site.name}
+                        {site.lastRun && <ResultLevel level={site.lastRun.lowerResultLevel} />}
+                    </>
+                ) : ''}
+            </Title>
 
             <Error error={error}/>
             <Loader loading={loading}/>
 
-            {site && (
-                <div>
-                    <div>
-                        <h2>Last run results :</h2>
-
-                        {site.lastRun ? (
-                            <>
-                                {site.lastRun.lowerResultLevel} at {site.lastRun.createdAt}
-
-                                <Link to={`/runs/${site.lastRun.id}`}>Show run</Link>
-                            </>
-                        ) : 'N/A'}
-
-                    </div>
-
-                    <div>
-                        <h2>Last runs</h2>
-
-                        {runsVisible ?
-                            <ShowSiteRuns siteId={id}/> :
-                            <button onClick={() => setRunsVisible(true)}>Show runs</button>
-                        }
-                    </div>
-                </div>
-            )}
+            {site && <ShowSiteRuns siteId={id}/> }
         </div>
     );
 }
