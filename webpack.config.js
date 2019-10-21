@@ -20,6 +20,9 @@ Encore
         useBuiltIns: 'usage',
         corejs: 3
     })
+    .configureCssLoader(options => {
+        options.modules = true;
+    })
     .enableSassLoader()
     .enableTypeScriptLoader()
 //    .enableForkedTypeScriptTypesChecking()
