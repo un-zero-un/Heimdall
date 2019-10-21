@@ -7,13 +7,15 @@ type Props = {
 
 export default function DateDiff({date}: Props) {
     const [state, setState] = useState<boolean>(false);
-    const parsedDate   = date instanceof Date ? date : new Date(Date.parse(date));
+    const parsedDate        = date instanceof Date ? date : new Date(Date.parse(date));
 
     setTimeout(() => setState(!state), 10000);
 
-    return <time dateTime={parsedDate.toISOString()}>
-        <abbr title={moment(date).format('MMMM Do YYYY, h:mm:ss a')}>
-            {moment(date).fromNow()}
-        </abbr>
-    </time>;
+    return (
+        <time dateTime={parsedDate.toISOString()}>
+            <abbr title={moment(date).format('MMMM Do YYYY, h:mm:ss a')}>
+                {moment(date).fromNow()}
+            </abbr>
+        </time>
+    );
 }

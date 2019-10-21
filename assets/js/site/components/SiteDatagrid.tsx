@@ -1,6 +1,7 @@
 import {DataTable} from 'grommet';
 import * as Icons from 'grommet-icons';
 import React from 'react';
+import DateDiff from '../../common/components/DateDiff';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
 import ResultLevel from '../../common/components/ResultLevel';
@@ -27,7 +28,12 @@ export default function SiteDatagrid({sites, error = false, loading = false}: Pr
                         header:   'Site',
                     },
                     {
-                        property: 'lastRun',
+                        property: 'lastRun.createdAt',
+                        header: 'Last run',
+                        render:   site => site.lastRun ? <DateDiff date={site.lastRun.createdAt} /> : null,
+                    },
+                    {
+                        property: 'lastRun.lowerResultLevel',
                         header:   'Last result',
                         render:   site => site.lastRun ? <ResultLevel level={site.lastRun.lowerResultLevel} /> : null,
                     },
