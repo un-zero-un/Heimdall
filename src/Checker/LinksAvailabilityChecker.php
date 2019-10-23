@@ -68,4 +68,9 @@ class LinksAvailabilityChecker implements Checker
             yield new CheckResult('error', 'no_links_to_parse_site_is_down');
         }
     }
+
+    public function getDefaultExecutionDelay(): int
+    {
+        return 60 * 60 * 24;
+    }
 }

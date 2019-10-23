@@ -1,8 +1,7 @@
 #!/bin/sh
 set -e
 
-
-CONNECT_STRING=$(echo ${DATABASE_URL} | awk -F '//' '{print $2}' -)
+CONNECT_STRING=$(eval echo ${DATABASE_URL} | awk -F '//' '{print $2}' -)
 
 CREDENTIALS=$(echo ${CONNECT_STRING} | awk -F '@' '{print $1}' -)
 HOST_INFO=$(echo ${CONNECT_STRING} | awk -F '@' '{print $2}' -)

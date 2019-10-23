@@ -52,4 +52,9 @@ class PageDisplaysCorrectlyChecker implements Checker
 
         return [new CheckResult('success', 'page_displays_correctly', ['page' => $config['page']])];
     }
+
+    public function getDefaultExecutionDelay(): int
+    {
+        return 60 * 3;
+    }
 }

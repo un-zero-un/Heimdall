@@ -39,6 +39,11 @@ class ConfiguredCheck implements HasTimestamp
     private string $check;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $executionDelay = null;
+
+    /**
      * @ORM\Column(type="json", options={"jsonb": true}, nullable=true)
      */
     private ?array $config = null;
@@ -65,6 +70,16 @@ class ConfiguredCheck implements HasTimestamp
     public function getCheck(): string
     {
         return $this->check;
+    }
+
+    public function getExecutionDelay(): ?int
+    {
+        return $this->executionDelay;
+    }
+
+    public function setExecutionDelay(?int $executionDelay): void
+    {
+        $this->executionDelay = $executionDelay;
     }
 
     public function getConfig(): ?array

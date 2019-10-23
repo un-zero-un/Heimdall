@@ -33,4 +33,9 @@ class IsUpChecker implements Checker
 
         return [new CheckResult('success', 'site_is_up')];
     }
+
+    public function getDefaultExecutionDelay(): int
+    {
+        return 60;
+    }
 }

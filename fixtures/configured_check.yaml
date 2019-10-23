@@ -9,6 +9,7 @@ App\Model\ConfiguredCheck:
         config: { page: '/l-equipe', selector: h3 > .teamMember__name, expected: Sacha }
     configured_check__1z1_links_availability:
         __construct: [ '@site__1z1' , 'App\Checker\LinksAvailabilityChecker']
+        executionDelay: 3600
 
     configured_check__helliogreen_is_up:
         __construct: [ '@site__helliogreen' , 'App\Checker\IsUpChecker']
