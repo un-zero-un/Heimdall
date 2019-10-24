@@ -8,6 +8,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
 use App\Checker\CheckResult;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -49,17 +51,23 @@ class Run implements HasTimestamp
     private ?Site $site = null;
 
     /**
-     * @Groups({"get_run"})
-     * @ORM\Column(type="json_document", options={"jsonb": true})
-     *
-     * @var CheckResult[]
+     * @ORM\Column(type="boolean")
+     * @Groups({"get_runs_for_site", "get_run", "get_sites", "get_site"})
      */
-    private array $checkResults = [];
+    private bool $running = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=RunCheckResult::class, mappedBy="run", cascade={"persist"})
+     *
+     * @var Collection<RunCheckResult>
+     */
+    private Collection $checkResults;
 
     public function __construct(Site $site)
     {
-        $this->id   = Uuid::uuid4();
-        $this->site = $site;
+        $this->id           = Uuid::uuid4();
+        $this->site         = $site;
+        $this->checkResults = new ArrayCollection;
 
         $this->initialize();
     }
@@ -75,19 +83,31 @@ class Run implements HasTimestamp
     }
 
     /**
-     * @return CheckResult[]
+     * @return Collection<RunCheckResult>
      */
-    public function getCheckResults(): array
+    public function getCheckResults(): Collection
     {
         return $this->checkResults;
     }
 
-    /**
-     * @param CheckResult[] $checkResults
-     */
-    public function setCheckResults(array $checkResults): void
+    public function addCheckResult(ConfiguredCheck $configuredCheck, CheckResult $checkResult): void
     {
-        $this->checkResults = $checkResults;
+        $this->checkResults->add(new RunCheckResult($this, $configuredCheck, $checkResult));
+    }
+
+    public function begin(): void
+    {
+        $this->running = true;
+    }
+
+    public function finish(): void
+    {
+        $this->running = false;
+    }
+
+    public function isRunning(): bool
+    {
+        return $this->running;
     }
 
     /**
@@ -110,11 +130,8 @@ class Run implements HasTimestamp
         return $level;
     }
 
-    public static function publish(Site $site, array $results): self
+    public static function publish(Site $site): self
     {
-        $run = new self($site);
-        $run->setCheckResults($results);
-
-        return $run;
+        return new self($site);
     }
 }

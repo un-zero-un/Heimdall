@@ -22,4 +22,9 @@ class RunRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($run);
         $this->getEntityManager()->flush();
     }
+
+    public function update(Run $run): void
+    {
+        $this->getEntityManager()->flush();
+    }
 }

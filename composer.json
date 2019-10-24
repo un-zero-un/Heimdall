@@ -70,7 +70,7 @@
         "reset": [
             "bin/console doctrine:schema:drop --force",
             "bin/console doctrine:schema:create",
-            "bin/console heimdall:lock:create-table",
+            "bin/console heimdall:lock:create-table -d",
             "bin/console hautelook:fixtures:load"
         ]
     },

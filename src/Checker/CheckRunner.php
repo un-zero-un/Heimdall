@@ -26,18 +26,26 @@ class CheckRunner
 
     public function runForSite(Site $site): void
     {
-        $checkResults = [];
+        $lastRun      = $site->getLastRun();
+        $run          = Run::publish($site);
+
+        $run->begin();
+        $this->runRepository->save($run);
         foreach ($site->getConfiguredChecks() as $configuredCheck) {
-            $results = $this->checkerCollection->get(
-                $configuredCheck->getCheck())->check($site, $configuredCheck->getConfig() ?: []
-            );
-
-            foreach ($results as $result) {
-                $checkResults[] = $result;
+            $checker        = $this->checkerCollection->get($configuredCheck->getCheck());
+            $executionDelay = $configuredCheck->getExecutionDelay() ?: $checker->getDefaultExecutionDelay();
+            if ($lastRun && (time() - $lastRun->getCreatedAt()->getTimestamp() < $executionDelay)) {
+                continue;
             }
-        }
 
-        $this->runRepository->save(Run::publish($site, $checkResults));
+            $results = $checker->check($site, $configuredCheck->getConfig() ?: []);
+            foreach ($results as $result) {
+                $run->addCheckResult($configuredCheck, $result);
+            }
+
+            $run->finish();
+            $this->runRepository->update($run);
+        }
     }
 
     public function runAll(): void

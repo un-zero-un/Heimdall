@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,9 +17,12 @@ class CreateLockTableCommand extends Command
 {
     private StoreInterface $store;
 
-    public function __construct(StoreInterface $store)
+    private Connection $connection;
+
+    public function __construct(StoreInterface $store, Connection $connection)
     {
         $this->store = $store;
+        $this->connection = $connection;
 
         parent::__construct();
     }
@@ -26,12 +30,18 @@ class CreateLockTableCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('heimdall:lock:create-table');
+            ->setName('heimdall:lock:create-table')
+            ->addOption('drop', 'd', InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+
+        if ($input->getOption('drop')) {
+            $this->connection->exec('DROP TABLE IF EXISTS lock_keys;');
+        }
+
 
         if (!$this->store instanceof PdoStore) {
             $io->warning('Not a PDO lock store. Skipping.');
