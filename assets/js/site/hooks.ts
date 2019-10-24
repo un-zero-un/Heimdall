@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {useState} from 'react';
 import {useAsyncEffect, useFetch} from '../common/hooks';
 import {subscribeToMercureResource} from '../common/MercureProvider';
@@ -31,6 +32,34 @@ export function useSites(): SitesData {
             setLoading(false);
         }
     }, []);
+
+    subscribeToMercureResource<Run>('Run', run => {
+        if (!sites) {
+            return;
+        }
+
+        const filteredSites = sites['hydra:member'].filter(site => run.site && site['@id'] === run.site['@id']);
+        if (0 === filteredSites.length) {
+            return;
+        }
+
+        if (filteredSites[0].lastRun && moment(filteredSites[0].lastRun.createdAt).isAfter(run.createdAt)) {
+            return;
+        }
+
+        setSites({
+            ...sites,
+            'hydra:member': sites['hydra:member'].map(site => {
+                if (site['@id'] !== filteredSites[0]['@id']) {
+                    return site;
+                }
+
+                site.lastRun = run;
+
+                return site;
+            })
+        });
+    });
 
     return [sites, loading, error];
 }

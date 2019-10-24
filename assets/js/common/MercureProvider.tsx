@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext} from 'react';
+import React, {createContext, ReactNode, useContext, useEffect} from 'react';
 import {Model} from './types';
 
 type Props = {
@@ -16,8 +16,6 @@ export default function MercureProvider({hubUrl, topics, children}: Props) {
 
     const eventSource     = new EventSource(url.href);
     eventSource.onmessage = e => {
-        console.log(JSON.parse(e.data));
-
         dispatcher.dispatchEvent(new MessageEvent(
             'message',
             {
@@ -41,8 +39,9 @@ export function useMercure() {
 
 export function useMercureMessages(listener: EventListener) {
     const [dispatcher] = useMercure();
-
     dispatcher.addEventListener('message', listener);
+
+    useEffect(() => () => dispatcher.removeEventListener('message', listener));
 }
 
 export function subscribeToMercureResource<T extends Model>(type: string, listener: (model: T) => void) {
