@@ -15,14 +15,18 @@ export default function MercureProvider({hubUrl, topics, children}: Props) {
     topics.forEach(topic => url.searchParams.append('topic', topic));
 
     const eventSource     = new EventSource(url.href);
-    eventSource.onmessage = e => dispatcher.dispatchEvent(new MessageEvent(
-        'message',
-        {
-            data: JSON.parse(e.data),
-            lastEventId: e.lastEventId,
-            origin: e.origin
-        },
-    ));
+    eventSource.onmessage = e => {
+        console.log(JSON.parse(e.data));
+
+        dispatcher.dispatchEvent(new MessageEvent(
+            'message',
+            {
+                data: JSON.parse(e.data),
+                lastEventId: e.lastEventId,
+                origin: e.origin
+            },
+        ));
+    };
 
     return (
         <MercureContext.Provider value={[dispatcher]}>

@@ -7,6 +7,7 @@ export type Run = Model & HasTimestamp & {
     lowerResultLevel: CheckResultLevel,
     checkResults?: Check[],
     site?: Site,
+    running: boolean,
 }
 
 export type RunCollection = ModelCollection<Run>;

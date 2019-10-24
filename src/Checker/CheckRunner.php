@@ -35,7 +35,7 @@ class CheckRunner
             $checker        = $this->checkerCollection->get($configuredCheck->getCheck());
             $executionDelay = $configuredCheck->getExecutionDelay() ?: $checker->getDefaultExecutionDelay();
             if ($lastRun && (time() - $lastRun->getCreatedAt()->getTimestamp() < $executionDelay)) {
-                continue;
+                //continue;
             }
 
             $results = $checker->check($site, $configuredCheck->getConfig() ?: []);

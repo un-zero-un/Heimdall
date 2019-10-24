@@ -4,9 +4,9 @@ import React from 'react';
 import DateDiff from '../../common/components/DateDiff';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
-import ResultLevel from '../../common/components/ResultLevel';
 import RoutedButton from '../../common/components/RoutedButton';
 import {RunCollection} from '../../types/run';
+import RunStatus from './RunStatus';
 
 type Props = {
     runs: RunCollection | null,
@@ -31,7 +31,7 @@ export default function RunDatagrid({runs, error = false, loading = false}: Prop
                     {
                         property: 'lowerResultLevel',
                         header:   'Result',
-                        render:   run => <ResultLevel level={run.lowerResultLevel}/>,
+                        render:   run => <RunStatus run={run} />,
                     },
                     {
                         property: '',

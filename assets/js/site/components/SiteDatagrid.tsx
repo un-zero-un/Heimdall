@@ -4,8 +4,8 @@ import React from 'react';
 import DateDiff from '../../common/components/DateDiff';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
-import ResultLevel from '../../common/components/ResultLevel';
 import RoutedButton from '../../common/components/RoutedButton';
+import RunStatus from '../../run/components/RunStatus';
 import {SiteCollection} from '../../types/site';
 
 type Props = {
@@ -35,7 +35,7 @@ export default function SiteDatagrid({sites, error = false, loading = false}: Pr
                     {
                         property: 'lastRun.lowerResultLevel',
                         header:   'Last result',
-                        render:   site => site.lastRun ? <ResultLevel level={site.lastRun.lowerResultLevel} /> : null,
+                        render:   site => <RunStatus run={site.lastRun} />
                     },
                     {
                         property: '',
