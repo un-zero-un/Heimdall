@@ -35,7 +35,7 @@ export function useSiteRuns(siteId: string): RunsData {
         if (!(runs && run.site)) {
             return;
         }
-
+        console.log(run);
         if (run.site['@id'] !== '/api/sites/' + siteId) {
             return;
         }
@@ -49,7 +49,20 @@ export function useSiteRuns(siteId: string): RunsData {
                 'hydra:totalItems': runs['hydra:totalItems'] + 1,
                 'hydra:member': [run, ...runs['hydra:member']]
             });
+
+            return;
         }
+
+        setRuns({
+            ...runs,
+            'hydra:member': runs['hydra:member'].map(collectionRun => {
+                if (collectionRun['@id'] === run['@id']) {
+                    return run;
+                }
+
+                return collectionRun;
+            })
+        });
     });
 
     return [runs, loading, error];
@@ -82,6 +95,19 @@ export function useRun(id: string): RunData {
             setLoading(false);
         }
     }, []);
+
+
+    subscribeToMercureResource<Run>('Run', mercureRun => {
+        if (!(run && mercureRun)) {
+            return;
+        }
+
+        if (run['@id'] !== mercureRun['@id']) {
+            return;
+        }
+
+        setRun(mercureRun);
+    });
 
     return [run, loading, error];
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Behavior\HasTimestamp;
+use App\Behavior\Impl\HasTimestampImpl;
 use App\Checker\CheckResult;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -11,20 +14,36 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(
+ *      mercure=true,
+ *      attributes={"order"={"createdAt": "ASC"}},
+ *      normalizationContext={"groups": {"get_run_check_result", "timestamp"}},
+ *      itemOperations={
+ *          "get"={"normalization_context"={"groups"={"get_run_check_result"}}}
+ *      },
+ *      collectionOperations={},
+ *      subresourceOperations={
+ *          "api_runs_check_results_get_subresource": {"normalization_context": {"groups": {"get_run_check_results_for_run", "timestamp"}}}
+ *      }
+ * )
  * @ORM\Entity()
  * @ORM\Table()
+ * @ORM\HasLifecycleCallbacks()
  */
-class RunCheckResult
+class RunCheckResult implements HasTimestamp
 {
+    use HasTimestampImpl;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="uuid")
-     * @Groups({"get_run"})
+     * @Groups({"get_run", "get_run_check_result"})
      */
     private UuidInterface $id;
 
     /**
+     * @Groups("get_run_check_result")
      * @ORM\ManyToOne(targetEntity=Run::class, inversedBy="checkResults")
      */
     private Run $run;
@@ -35,18 +54,21 @@ class RunCheckResult
     private ConfiguredCheck $configuredCheck;
 
     /**
+     * @Groups({"get_run_check_results_for_run", "get_run_check_result"})
      * @ORM\Column(type="string")
      * @Groups({"get_run"})
      */
     private string $level;
 
     /**
+     * @Groups({"get_run_check_results_for_run", "get_run_check_result"})
      * @ORM\Column(type="string")
      * @Groups({"get_run"})
      */
     private string $type;
 
     /**
+     * @Groups({"get_run_check_results_for_run", "get_run_check_result"})
      * @ORM\Column(type="json_document")
      * @Groups({"get_run"})
      */
@@ -60,6 +82,8 @@ class RunCheckResult
         $this->data            = $checkResult->getData();
         $this->run             = $run;
         $this->configuredCheck = $configuredCheck;
+
+        $this->initialize();
     }
 
     public function getId(): UuidInterface

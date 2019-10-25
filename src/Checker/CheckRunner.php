@@ -41,6 +41,7 @@ class CheckRunner
             $results = $checker->check($site, $configuredCheck->getConfig() ?: []);
             foreach ($results as $result) {
                 $run->addCheckResult($configuredCheck, $result);
+                $this->runRepository->update($run);
             }
 
             $run->finish();

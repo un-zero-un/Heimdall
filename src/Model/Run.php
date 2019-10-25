@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
 use App\Checker\CheckResult;
@@ -57,6 +58,7 @@ class Run implements HasTimestamp
     private bool $running = false;
 
     /**
+     * @ApiSubresource()
      * @ORM\OneToMany(targetEntity=RunCheckResult::class, mappedBy="run", cascade={"persist"})
      *
      * @var Collection<RunCheckResult>

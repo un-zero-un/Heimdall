@@ -24,7 +24,9 @@ export default function App() {
     return (
         <Grommet theme={base}>
             <Provider store={store}>
-                <MercureProvider topics={['http://localhost/api/runs/{id}']} hubUrl="https://localhost/hub">
+                <MercureProvider
+                    topics={['http://localhost/api/sites/{id}', 'http://localhost/api/runs/{id}', 'http://localhost/api/run_check_results/{id}']}
+                    hubUrl="https://localhost/hub">
                     <BrowserRouter>
                         <AppBar/>
                         <Box pad="medium">

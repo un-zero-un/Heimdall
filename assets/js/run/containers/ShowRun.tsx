@@ -1,8 +1,11 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import * as Icons from 'grommet-icons';
+import ShowRunCheckResults from '../../check/containers/ShowRunCheckResults';
 import Error from '../../common/components/Error';
 import Loader from '../../common/components/Loader';
+import RoutedButton from '../../common/components/RoutedButton';
 import Title from '../../common/components/Title';
+import RunStatus from '../components/RunStatus';
 import {useRun} from '../hooks';
 
 type Props = {
@@ -14,31 +17,17 @@ export default function ShowRun({id}: Props) {
 
     return (
         <div>
-            <Title>Run "{run && run.site && run.site.name}"</Title>
+            <Title>
+                Run "{run && run.site && run.site.name}"
+                <RunStatus run={run} />
+            </Title>
 
-            {run && run.site && <Link to={`/sites/${run.site.id}`}>Back to site</Link>}
+            {run && run.site && <RoutedButton path={`/sites/${run.site.id}`} icon={<Icons.Previous />} label="Back to site" />}
 
             <Loader loading={loading}/>
             <Error error={error}/>
 
-            {null !== run && (
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Level</th>
-                        <td>Type</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {run.checkResults && run.checkResults.map((check, i) => (
-                        <tr key={run.id + '-' + i}>
-                            <td>{check.level}</td>
-                            <td>{check.type}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            )}
+            <ShowRunCheckResults runId={id} />
         </div>
     );
 }

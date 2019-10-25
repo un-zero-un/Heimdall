@@ -12,10 +12,5 @@ export default function RunStatus({run}: Props) {
         return null;
     }
 
-    return (
-        <>
-            {run.running ? <Icons.FormRefresh /> : null}
-            <ResultLevel level={run.lowerResultLevel} />
-        </>
-    );
+    return run.running ? <Icons.FormRefresh /> : <ResultLevel level={run.lowerResultLevel} />;
 }
