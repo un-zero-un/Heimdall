@@ -3,8 +3,10 @@ version: '3.7'
 services:
     php:
         env_file: .env
-        ports:   [ '8080:8080' ]
-        volumes: [ '.:/app' ]
+        ports:    [ '8080:8080' ]
+        volumes:  [ '.:/app' ]
+        depends_on:
+          - smtp
 
     web:
         ports:   [ '80:80', '443:443' ]
@@ -12,3 +14,8 @@ services:
 
     database:
         ports:   [ '5432:5432' ]
+
+    smtp:
+        image:    mailhog/mailhog
+        networks: [ heimdall ]
+        ports:    ['8025:8025']

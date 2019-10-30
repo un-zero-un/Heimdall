@@ -33,8 +33,8 @@ export default function SiteDatagrid({sites, error = false, loading = false}: Pr
                         render:   site => site.lastRun ? <DateDiff date={site.lastRun.createdAt} /> : null,
                     },
                     {
-                        property: 'lastRun.lowerResultLevel',
-                        header:   'Last result',
+                        property: 'lastRun.currentLowerResultLevel',
+                        header:   'Current status',
                         render:   site => <RunStatus run={site.lastRun} />
                     },
                     {

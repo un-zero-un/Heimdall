@@ -6,6 +6,7 @@ namespace App\Model;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Behavior\Equatable;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
 use App\Checker\CheckResult;
@@ -33,7 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\RunRepository")
  * @ORM\Table()
  */
-class Run implements HasTimestamp
+class Run implements HasTimestamp, Equatable
 {
     use HasTimestampImpl;
 
@@ -130,6 +131,15 @@ class Run implements HasTimestamp
         }
 
         return $level;
+    }
+
+    public function isEqualTo(Equatable $equatable): bool
+    {
+        if (!$equatable instanceof self) {
+            return false;
+        }
+
+        return $this->getId()->equals($equatable->getId());
     }
 
     public static function publish(Site $site): self

@@ -35,7 +35,7 @@ export function useSiteRuns(siteId: string): RunsData {
         if (!(runs && run.site)) {
             return;
         }
-        console.log(run);
+
         if (run.site['@id'] !== '/api/sites/' + siteId) {
             return;
         }

@@ -38,4 +38,9 @@ class IsUpChecker implements Checker
     {
         return 60;
     }
+
+    public static function getName(): string
+    {
+        return 'is_up';
+    }
 }

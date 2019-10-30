@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Behavior\Equatable;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\Table()
  */
-class ConfiguredCheck implements HasTimestamp
+class ConfiguredCheck implements HasTimestamp, Equatable
 {
     use HasTimestampImpl;
 
@@ -33,15 +35,16 @@ class ConfiguredCheck implements HasTimestamp
     private Site $site;
 
     /**
+     * @Groups({"get_site"})
      * @Assert\NotBlank()
      * @ORM\Column(type="string", name="check_class")
      */
     private string $check;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
-    private ?int $executionDelay = null;
+    private int $executionDelay;
 
     /**
      * @ORM\Column(type="json", options={"jsonb": true}, nullable=true)
@@ -72,7 +75,7 @@ class ConfiguredCheck implements HasTimestamp
         return $this->check;
     }
 
-    public function getExecutionDelay(): ?int
+    public function getExecutionDelay(): int
     {
         return $this->executionDelay;
     }
@@ -90,5 +93,14 @@ class ConfiguredCheck implements HasTimestamp
     public function setConfig(?array $config): void
     {
         $this->config = $config;
+    }
+
+    public function isEqualTo(Equatable $equatable): bool
+    {
+        if (!$equatable instanceof self) {
+            return false;
+        }
+
+        return $equatable->getId()->equals($this->getId());
     }
 }

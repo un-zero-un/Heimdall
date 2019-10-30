@@ -1,15 +1,19 @@
 App\Model\ConfiguredCheck:
     configured_check__1z1_is_up:
         __construct: [ '@site__1z1' , 'App\Checker\IsUpChecker']
+        executionDelay: 60
     configured_check__1z1_page_displays_correctly_homepage:
         __construct: [ '@site__1z1' , 'App\Checker\PageDisplaysCorrectlyChecker']
         config: { page: '/', selector: h2, expected: un zéro un }
+        executionDelay: 60
     configured_check__1z1_page_displays_correctly_team:
         __construct: [ '@site__1z1' , 'App\Checker\PageDisplaysCorrectlyChecker']
         config: { page: '/l-equipe', selector: h3 > .teamMember__name, expected: Sacha }
+        executionDelay: 60
     configured_check__1z1_links_availability:
         __construct: [ '@site__1z1' , 'App\Checker\LinksAvailabilityChecker']
         executionDelay: 3600
 
     configured_check__helliogreen_is_up:
         __construct: [ '@site__helliogreen' , 'App\Checker\IsUpChecker']
+        executionDelay: 60

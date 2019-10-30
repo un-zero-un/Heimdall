@@ -17,4 +17,6 @@ interface Checker
     public function check(Site $site, array $config = []): iterable;
 
     public function getDefaultExecutionDelay(): int;
+
+    public static function getName(): string;
 }

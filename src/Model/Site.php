@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
+use App\Checker\CheckResult;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -134,10 +135,82 @@ class Site implements HasTimestamp
      */
     public function getLastRun(): ?Run
     {
-        if (0 === count ($this->getRuns())) {
+        if (0 === count($this->getRuns())) {
             return null;
         }
 
         return $this->getRuns()->first();
+    }
+
+    public function getLastResultsGroupedByCheckTypes(): array
+    {
+        $maxDuration = array_reduce(
+            $this->getConfiguredChecks()->toArray(),
+            static function (int $memo, ConfiguredCheck $configuredCheck) {
+                return max($memo, $configuredCheck->getExecutionDelay());
+            },
+            0
+        );
+
+        $runs = $this->getRuns()->filter(
+            static function (Run $run) use ($maxDuration) {
+                return $run->getUpdatedAt() > (new \DateTime)->sub(new \DateInterval('PT' . $maxDuration . 'S'));
+            }
+        );
+
+        /** @var RunCheckResult[] $lastCheckResults */
+        $lastCheckResults = [];
+        foreach ($runs as $run) {
+            /** @var $run Run */
+            foreach ($run->getCheckResults() as $checkResult) {
+                foreach ($lastCheckResults as $lastCheckResult) {
+                    if (
+                        $lastCheckResult->getConfiguredCheck()->isEqualTo($checkResult->getConfiguredCheck()) &&
+                        !$lastCheckResult->isFromSameCheck($checkResult)
+                    ) {
+                        break 2;
+                    }
+                }
+
+                $lastCheckResults[] = $checkResult;
+            }
+        }
+
+        return $lastCheckResults;
+    }
+
+    /**
+     * @Groups({"get_site"})
+     */
+    public function getLastLevelsGroupedByCheckers(): array
+    {
+        $levels = [];
+        foreach ($this->getLastResultsGroupedByCheckTypes() as $checkResult) {
+            $check = call_user_func([$checkResult->getConfiguredCheck()->getCheck(), 'getName']);
+
+            $levels[$check] = CheckResult::worstLevel($checkResult->getLevel(), $levels[$check] ?? 'success');
+        }
+
+        return $levels;
+    }
+
+    /**
+     * @Groups({"get_sites", "get_site"})
+     */
+    public function getCurrentLowerResultLevel(): string
+    {
+        $level = 'success';
+
+        foreach ($this->getLastResultsGroupedByCheckTypes() as $checkResult) {
+            if ('error' === $checkResult->getLevel()) {
+                return 'error';
+            }
+
+            if ('warning' === $checkResult->getLevel()) {
+                $level = 'warning';
+            }
+        }
+
+        return $level;
     }
 }

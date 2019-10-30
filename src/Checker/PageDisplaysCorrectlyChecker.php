@@ -57,4 +57,9 @@ class PageDisplaysCorrectlyChecker implements Checker
     {
         return 60 * 3;
     }
+
+    public static function getName(): string
+    {
+        return 'page_display_correctly';
+    }
 }

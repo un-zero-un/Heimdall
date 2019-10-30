@@ -73,4 +73,9 @@ class LinksAvailabilityChecker implements Checker
     {
         return 60 * 60 * 24;
     }
+
+    public static function getName(): string
+    {
+        return 'links_availability';
+    }
 }

@@ -10,5 +10,9 @@ check_result:
 
         link_status_is_ok: Link to "%url%" is followable
 
+    checker:
+        is_up: Site is up
+        links_availability: Links are followable
+        page_display_correctly: Site pages displays correctly
 front:
     main_title: Heimdall - Watch at your websites

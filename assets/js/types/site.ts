@@ -7,6 +7,7 @@ export type Site = Model & HasTimestamp & {
     slug: string,
     url: string,
     lastRun: Run | null,
+    lastLevelsGroupedByCheckers: { [check: string]: string },
 }
 
 export type SiteCollection = ModelCollection<Site>;

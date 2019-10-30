@@ -49,6 +49,7 @@ class RunCheckResult implements HasTimestamp
     private Run $run;
 
     /**
+     * @Groups({"get_site"})
      * @ORM\ManyToOne(targetEntity=ConfiguredCheck::class)
      */
     private ConfiguredCheck $configuredCheck;
@@ -56,21 +57,21 @@ class RunCheckResult implements HasTimestamp
     /**
      * @Groups({"get_run_check_results_for_run", "get_run_check_result"})
      * @ORM\Column(type="string")
-     * @Groups({"get_run"})
+     * @Groups({"get_run", "get_site"})
      */
     private string $level;
 
     /**
      * @Groups({"get_run_check_results_for_run", "get_run_check_result"})
      * @ORM\Column(type="string")
-     * @Groups({"get_run"})
+     * @Groups({"get_run", "get_site"})
      */
     private string $type;
 
     /**
      * @Groups({"get_run_check_results_for_run", "get_run_check_result"})
      * @ORM\Column(type="json_document")
-     * @Groups({"get_run"})
+     * @Groups({"get_run", "get_site"})
      */
     private array $data;
 
@@ -114,5 +115,18 @@ class RunCheckResult implements HasTimestamp
     public function getData(): array
     {
         return $this->data;
+    }
+
+    public function isFromSameCheck(self $runCheckResult): bool
+    {
+        if (!$this->configuredCheck->isEqualTo($runCheckResult->getConfiguredCheck())) {
+            return false;
+        }
+
+        if (!$this->run->isEqualTo($runCheckResult->getRun())) {
+            return false;
+        }
+
+        return true;
     }
 }
