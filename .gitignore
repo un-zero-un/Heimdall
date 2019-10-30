@@ -22,3 +22,6 @@ docker/nginx/localhost-key.pem
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+!.gitkeep
+assets/js/i18n

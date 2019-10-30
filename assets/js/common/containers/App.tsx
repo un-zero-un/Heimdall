@@ -9,6 +9,7 @@ import ShowRun from '../../run/containers/ShowRun';
 import ShowSite from '../../site/containers/ShowSite';
 import AppBar from '../components/AppBar';
 import MercureProvider from '../MercureProvider';
+import TranslationProvider from '../TranslationProvider';
 import Dashboard from './Dashboard';
 import reducer from '../../reducers';
 import withRouteParams from './withRouteParams';
@@ -23,22 +24,28 @@ const store = createStore(reducer, undefined, applyMiddleware(...middleware));
 export default function App() {
     return (
         <Grommet theme={base}>
-            <Provider store={store}>
-                <MercureProvider
-                    topics={['http://localhost/api/sites/{id}', 'http://localhost/api/runs/{id}', 'http://localhost/api/run_check_results/{id}']}
-                    hubUrl="https://localhost/hub">
-                    <BrowserRouter>
-                        <AppBar/>
-                        <Box pad="medium">
-                            <Switch>
-                                <Route exact path="/" component={Dashboard}/>
-                                <Route exact path="/sites/:id" component={withRouteParams(ShowSite)}/>
-                                <Route exact path="/runs/:id" component={withRouteParams(ShowRun)}/>
-                            </Switch>
-                        </Box>
-                    </BrowserRouter>
-                </MercureProvider>
-            </Provider>
+            <TranslationProvider>
+                <Provider store={store}>
+                    <MercureProvider
+                        topics={[
+                            'http://localhost/api/sites/{id}',
+                            'http://localhost/api/runs/{id}',
+                            'http://localhost/api/run_check_results/{id}',
+                        ]}
+                        hubUrl="https://localhost/hub">
+                        <BrowserRouter>
+                            <AppBar/>
+                            <Box pad="medium">
+                                <Switch>
+                                    <Route exact path="/" component={Dashboard}/>
+                                    <Route exact path="/sites/:id" component={withRouteParams(ShowSite)}/>
+                                    <Route exact path="/runs/:id" component={withRouteParams(ShowRun)}/>
+                                </Switch>
+                            </Box>
+                        </BrowserRouter>
+                    </MercureProvider>
+                </Provider>
+            </TranslationProvider>
         </Grommet>
     );
 }
