@@ -24,7 +24,9 @@ Encore
     .configureCssLoader(options => {
         options.modules = true;
     })
-    .enableSassLoader()
+    .enableSassLoader(options => {
+        options.implementation = require('sass');
+    })
     .enableTypeScriptLoader()
 //    .enableForkedTypeScriptTypesChecking()
     .enableIntegrityHashes(Encore.isProduction())
