@@ -14,5 +14,13 @@ check_result:
         is_up: Site is up
         links_availability: Links are followable
         page_display_correctly: Site pages displays correctly
+
 front:
     main_title: Heimdall - Watch at your websites
+
+notification:
+    run_result:
+        subject:
+            error: Errors on last runs
+            warning: Some warnings has been detected
+            success: Last run was fine on all sites

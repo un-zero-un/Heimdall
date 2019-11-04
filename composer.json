@@ -22,6 +22,7 @@
         "symfony/monolog-bundle": "*",
         "symfony/notifier": "^5.0.0@dev",
         "symfony/orm-pack": "^1.0.7",
+        "symfony/slack-notifier": "^5.0.0@dev",
         "symfony/translation": "*",
         "symfony/validator": "^4.3.5",
         "symfony/webpack-encore-bundle": "^1.6",

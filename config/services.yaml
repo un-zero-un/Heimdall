@@ -1,16 +1,26 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
+imports:
+    - { resource: './services/*.yaml' }
 
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+
+    notification_channel_policy:
+        urgent: ['chat/slack', email]
+        high: ['chat/slack', email]
+        medium: ['chat/slack']
+        low: ['chat/slack']
+    notification_mail_from: no-reply@heimdall.dev
+    notification_recipients:
+        -   phone: null
+            email: contact@heimdall.dev
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $notificationRecipients: '%notification_recipients%'
 
     _instanceof:
         App\Checker\Checker:
@@ -49,3 +59,5 @@ services:
             $connOrDsn: '@doctrine.dbal.default_connection'
 
     Symfony\Component\Lock\Factory: ~
+
+

@@ -4,7 +4,7 @@ services:
     php:
         networks:   [ heimdall ]
         build:      { target: php, context: . }
-        depends_on: [ database ]
+        depends_on: [ database, mercure ]
 
     web:
         networks:   [ heimdall ]

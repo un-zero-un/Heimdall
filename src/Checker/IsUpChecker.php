@@ -22,13 +22,13 @@ class IsUpChecker implements Checker
     public function check(Site $site, array $config = []): iterable
     {
         try {
-            $response = $this->httpClient->request('GET', $site->getUrl());
+            $response = $this->httpClient->request('GET', $site->getUrl(), ['timeout' => 1]);
+
+            if ($response->getStatusCode() >= 400) {
+                return [new CheckResult('error', 'site_status_is_errored', ['status' => $response->getStatusCode()])];
+            }
         } catch (\Exception $e) {
             return [new CheckResult('error', 'site_is_down')];
-        }
-
-        if ($response->getStatusCode() >= 400) {
-            return [new CheckResult('error', 'site_status_is_errored', ['status' => $response->getStatusCode()])];
         }
 
         return [new CheckResult('success', 'site_is_up')];

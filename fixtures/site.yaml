@@ -4,3 +4,6 @@ App\Model\Site:
 
     site__helliogreen:
         __construct: [ 'Helliogreen', 'https://www.helliogreen.com' ]
+
+    site__mortier:
+        __construct: [ 'Mortier', 'https://www.etsmortier.fr' ]

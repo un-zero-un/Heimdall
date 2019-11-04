@@ -1,0 +1,13 @@
+The last runs ended failed with the result level "{{ worst_level }}".
+
+Here is the detail:
+
+{% for run in runs if run.lowerResultLevel == worst_level %}
+
+## {{ run.site.name|e }}
+
+{% for run_check_result in run.checkResults if run_check_result.level == worst_level %}
+    * {{ ('check_result.type.' ~ run_check_result.type)|trans(run_check_result.data) }}
+{% endfor %}
+
+{% endfor %}

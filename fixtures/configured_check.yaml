@@ -17,3 +17,7 @@ App\Model\ConfiguredCheck:
     configured_check__helliogreen_is_up:
         __construct: [ '@site__helliogreen' , 'App\Checker\IsUpChecker']
         executionDelay: 60
+
+    configured_check__mortier_is_up:
+        __construct: [ '@site__mortier' , 'App\Checker\IsUpChecker']
+        executionDelay: 60

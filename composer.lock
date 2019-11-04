@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d417548b8ab1d59c1f7b621a3a43ee6",
+    "content-hash": "9fb22521b70f60b1c146dbfd782e1c13",
     "packages": [
         {
             "name": "api-platform/api-pack",
@@ -5868,6 +5868,61 @@
             "time": "2019-09-17T11:12:18+00:00"
         },
         {
+            "name": "symfony/slack-notifier",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/slack-notifier.git",
+                "reference": "7ac608561ab180148f36c5765092b0dcdeaaebb2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/slack-notifier/zipball/7ac608561ab180148f36c5765092b0dcdeaaebb2",
+                "reference": "7ac608561ab180148f36c5765092b0dcdeaaebb2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.9",
+                "symfony/http-client": "^4.3|^5.0",
+                "symfony/notifier": "^5.0"
+            },
+            "type": "symfony-bridge",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Notifier\\Bridge\\Slack\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Slack Notifier Bridge",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "notifier",
+                "slack"
+            ],
+            "time": "2019-10-27T11:56:24+00:00"
+        },
+        {
             "name": "symfony/stopwatch",
             "version": "v4.3.5",
             "source": {
@@ -8329,6 +8384,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "symfony/notifier": 20,
+        "symfony/slack-notifier": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
