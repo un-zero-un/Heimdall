@@ -2,7 +2,8 @@
 #
 # This file is here to wait for Symfony 5.0 & notifier config in FrameworkBundle
 parameters:
-
+    env(SLACK_DSN): ''
+    env(MAILER_DSN): ''
     chat_transport: '%env(SLACK_DSN)%'
     email_transport: '%env(MAILER_DSN)%'
 

@@ -4,13 +4,11 @@ services:
     php:
         image:      unzeroun/heimdall-php
         networks:   [ heimdall ]
-        build:      { target: php, context: . }
         depends_on: [ database, mercure ]
 
     web:
         image:      unzeroun/heimdall-nginx
         networks:   [ heimdall ]
-        build:      { target: nginx, context: . }
         depends_on: [ php, mercure ]
 
     mercure:
