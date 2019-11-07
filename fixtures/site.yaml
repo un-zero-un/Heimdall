@@ -7,3 +7,6 @@ App\Model\Site:
 
     site__mortier:
         __construct: [ 'Mortier', 'https://www.etsmortier.fr' ]
+
+    site__concerto:
+        __construct: [ 'Concerto CMS demo', 'https://concerto.un-zero-un.net' ]

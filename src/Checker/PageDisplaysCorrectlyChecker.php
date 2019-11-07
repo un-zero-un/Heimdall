@@ -23,12 +23,12 @@ class PageDisplaysCorrectlyChecker implements Checker
     public function check(Site $site, array $config = []): iterable
     {
         try {
-            $response = $this->httpClient->request('GET', $site->getUrl() . $config['page']);
-        } catch (\Exception $e) {
-            return [];
-        }
+            $response = $this->httpClient->request('GET', $site->getUrl() . $config['page'], ['timeout' => 1]);
 
-        if ($response->getStatusCode() >= 400) {
+            if ($response->getStatusCode() >= 400) {
+                return [];
+            }
+        } catch (\Exception $e) {
             return [];
         }
 

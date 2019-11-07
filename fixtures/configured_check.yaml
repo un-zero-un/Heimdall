@@ -14,10 +14,30 @@ App\Model\ConfiguredCheck:
         __construct: [ '@site__1z1' , 'App\Checker\LinksAvailabilityChecker']
         executionDelay: 3600
 
+
     configured_check__helliogreen_is_up:
         __construct: [ '@site__helliogreen' , 'App\Checker\IsUpChecker']
         executionDelay: 60
+    configured_check__helliogreen_page_displays_correctly:
+        __construct: [ '@site__helliogreen' , 'App\Checker\PageDisplaysCorrectlyChecker']
+        config: { page: '/', selector: h1, expected: 'A non existant string that will make it fail' }
+        executionDelay: 60
+
 
     configured_check__mortier_is_up:
         __construct: [ '@site__mortier' , 'App\Checker\IsUpChecker']
         executionDelay: 60
+    configured_check__mortier_page_displays_correctly:
+        __construct: [ '@site__mortier' , 'App\Checker\PageDisplaysCorrectlyChecker']
+        config: { page: '/', selector: h1, expected: 'Will fail because site does not exists' }
+        executionDelay: 60
+
+
+    configured_check__concerto_is_up:
+        __construct: [ '@site__concerto' , 'App\Checker\IsUpChecker']
+        executionDelay: 60
+    configured_check__concerto_page_displays_correctly:
+        __construct: [ '@site__concerto' , 'App\Checker\PageDisplaysCorrectlyChecker']
+        config: { page: '/', selector: h1, expected: 'Will fail because site is 502' }
+        executionDelay: 60
+
