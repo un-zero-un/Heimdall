@@ -34,12 +34,12 @@ class LinksAvailabilityChecker implements Checker
             $response = $this->httpClient->request('GET', $url);
 
             if ($response->getStatusCode() >= 400) {
-                yield new CheckResult('warning', 'link_status_is_errored', ['status' => $response->getStatusCode()]);
+                yield new CheckResult('warning', 'link_status_is_errored', ['%status%' => $response->getStatusCode()]);
 
                 return;
             }
 
-            yield new CheckResult('success', 'link_status_is_ok', ['url' => $url]);
+            yield new CheckResult('success', 'link_status_is_ok', ['%url%' => $url]);
 
             $crawler = new Crawler($response->getContent());
             foreach ($crawler->filter('a[href]') as $a) {

@@ -41,16 +41,16 @@ class PageDisplaysCorrectlyChecker implements Checker
                     new CheckResult(
                         'error',
                         'text_not_found',
-                        ['selector' => $config['selector'], 'expected' => $config['expected'], 'page' => $config['page']]
+                        ['%selector%' => $config['selector'], '%expected%' => $config['expected'], '%page%' => $config['page']]
                     )
                 ];
             }
         } catch (\InvalidArgumentException $e) {
-            return [new CheckResult('error', 'selector_not_found', ['selector' => $config['selector'], 'page' => $config['page']])];
+            return [new CheckResult('error', 'selector_not_found', ['%selector%' => $config['selector'], '%page%' => $config['page']])];
         }
 
 
-        return [new CheckResult('success', 'page_displays_correctly', ['page' => $config['page']])];
+        return [new CheckResult('success', 'page_displays_correctly', ['%page%' => $config['page']])];
     }
 
     public function getDefaultExecutionDelay(): int

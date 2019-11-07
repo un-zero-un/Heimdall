@@ -7,7 +7,7 @@ Here is the detail:
 ## {{ run.site.name|e }}
 
 {% for run_check_result in run.checkResults if run_check_result.level == worst_level %}
-    * {{ ('check_result.type.' ~ run_check_result.type)|trans(run_check_result.data) }}
+    * {{ ('check_result.type.' ~ run_check_result.type)|trans(run_check_result.data)|raw }}
 {% endfor %}
 
 {% endfor %}
