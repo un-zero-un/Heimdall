@@ -1,6 +1,6 @@
 import {HasTimestamp, Model, ModelCollection} from '../common/types';
 import {CheckResultLevel} from './check';
-import {Site} from './site';CheckResultLevel
+import {Site} from './site';
 
 export type Run = Model & HasTimestamp & {
     '@type': 'Run',
