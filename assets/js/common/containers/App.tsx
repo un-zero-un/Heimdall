@@ -21,18 +21,22 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(reducer, undefined, applyMiddleware(...middleware));
 
-export default function App() {
+type Props = {
+    baseUrl: string,
+}
+
+export default function App({baseUrl}: Props) {
     return (
         <Grommet theme={base}>
             <TranslationProvider>
                 <Provider store={store}>
                     <MercureProvider
                         topics={[
-                            process.env.API_BASE_URL + '/api/sites/{id}',
-                            process.env.API_BASE_URL + '/api/runs/{id}',
-                            process.env.API_BASE_URL + '/api/run_check_results/{id}',
+                            baseUrl + '/api/sites/{id}',
+                            baseUrl + '/api/runs/{id}',
+                            baseUrl + '/api/run_check_results/{id}',
                         ]}
-                        hubUrl={process.env.API_BASE_URL + '/.well-known/mercure'}>
+                        hubUrl={baseUrl + '/.well-known/mercure'}>
                         <BrowserRouter>
                             <AppBar/>
                             <Box pad="medium">

@@ -5,4 +5,8 @@ import App from './common/containers/App';
 
 import '../css/app.scss';
 
-render(<App />, document.getElementById('heimdall'));
+
+const rootElement = document.getElementById('heimdall');
+if (rootElement) {
+    render(<App baseUrl={rootElement.dataset.heimdallBaseUri as string} />, rootElement);
+}

@@ -31,11 +31,6 @@ Encore
 //    .enableForkedTypeScriptTypesChecking()
     .enableIntegrityHashes(Encore.isProduction())
     .enableReactPreset()
-    .configureDefinePlugin(options => {
-        const exec = require('child_process').execSync;
-
-        options['process.env.API_BASE_URL'] = JSON.stringify(exec('php bin/console router:generate index', {encoding: 'utf8'}));
-    })
 ;
 
 const config = Encore.getWebpackConfig();
