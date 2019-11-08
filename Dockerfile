@@ -81,11 +81,19 @@ CMD ["php-fpm"]
 
 FROM nginx:${NGINX_VERSION}-alpine AS nginx
 
-RUN rm /etc/nginx/conf.d/default.conf;
+RUN rm /etc/nginx/conf.d/default.conf
 COPY docker/nginx/default.nginx.conf /etc/nginx/conf.d/
 
 WORKDIR /app
 COPY --from=php /app/public public/
+
+
+RUN set -eux; \
+    wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.0/mkcert-v1.4.0-linux-amd64; \
+    chmod a+x ./mkcert; \
+    mkdir -p /app/docker/nginx;\
+    ./mkcert -cert-file /app/docker/nginx/localhost.pem -key-file /app/docker/nginx/localhost-key.pem localhost 127.0.0.1 ::1; \
+    rm ./mkcert
 
 
 EXPOSE 80
