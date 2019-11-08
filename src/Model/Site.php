@@ -22,7 +22,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *      attributes={"order"={"name": "ASC"}},
  *      mercure=true,
+ *      normalizationContext={"groups": {"get_site", "timestamp"}},
  *      collectionOperations={"get": {"normalization_context": {"groups": {"get_sites", "timestamp"}}}},
  *      itemOperations={"get": {"normalization_context": {"groups": {"get_site", "timestamp"}}}}
  * )
@@ -122,6 +124,11 @@ class Site implements HasTimestamp
         return $this->configuredChecks;
     }
 
+    public function addRun(Run $run): void
+    {
+        $this->runs->add($run);
+    }
+
     /**
      * @return Collection<Run>
      */
@@ -152,9 +159,13 @@ class Site implements HasTimestamp
             0
         );
 
+        $lastRun = $this->getLastRun();
+        if (null === $lastRun) {
+            return [];
+        }
         $runs = $this->getRuns()->filter(
-            static function (Run $run) use ($maxDuration) {
-                return $run->getUpdatedAt() > (new \DateTime)->sub(new \DateInterval('PT' . $maxDuration . 'S'));
+            static function (Run $run) use ($maxDuration, $lastRun) {
+                return $run->getUpdatedAt() > $lastRun->getUpdatedAt()->sub(new \DateInterval('PT' . $maxDuration . 'S'));
             }
         );
 
@@ -195,12 +206,15 @@ class Site implements HasTimestamp
     }
 
     /**
-     * @Groups({"get_sites", "get_site"})
+     * @Groups({"get_sites", "get_site", "get_run"})
      */
     public function getCurrentLowerResultLevel(): string
     {
-        $level = 'success';
+        if (null === $this->getLastRun()) {
+            return 'unknown';
+        }
 
+        $level = 'success';
         foreach ($this->getLastResultsGroupedByCheckTypes() as $checkResult) {
             if ('error' === $checkResult->getLevel()) {
                 return 'error';

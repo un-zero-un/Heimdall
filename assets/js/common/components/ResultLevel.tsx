@@ -7,12 +7,16 @@ type Props = {
 
 export default function ResultLevel({level}: Props) {
     if ('error' === level) {
-        return <Icons.Alert color="red" />
+        return <Icons.StatusCritical color="red"/>;
     }
 
     if ('warning' === level) {
-        return <Icons.Flag color="orange" />
+        return <Icons.StatusInfo color="orange"/>;
     }
 
-    return <Icons.Checkmark color="green" />
+    if ('success' === level) {
+        return <Icons.StatusGood color="green"/>;
+    }
+
+    return <Icons.StatusUnknown color="grey"/>;
 }

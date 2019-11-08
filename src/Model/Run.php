@@ -72,6 +72,7 @@ class Run implements HasTimestamp, Equatable
         $this->site         = $site;
         $this->checkResults = new ArrayCollection;
 
+        $this->site->addRun($this);
         $this->initialize();
     }
 

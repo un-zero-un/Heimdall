@@ -52,10 +52,10 @@ class CheckRunner
                 $run->addCheckResult($configuredCheck, $result);
                 $this->runRepository->update($run);
             }
-
-            $run->finish();
-            $this->runRepository->update($run);
         }
+
+        $run->finish();
+        $this->runRepository->update($run);
 
         return $run;
     }

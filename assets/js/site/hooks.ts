@@ -54,9 +54,11 @@ export function useSites(): SitesData {
                     return site;
                 }
 
-                site.lastRun = run;
-
-                return site;
+                return {
+                    ...site,
+                    ...run.site,
+                    lastRun: run,
+                };
             })
         });
     });
