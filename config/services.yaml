@@ -2,6 +2,13 @@ imports:
     - { resource: './services/*.yaml' }
 
 parameters:
+    env(DEFAULT_HOST): localhost
+    env(DEFAULT_SCHEME): https
+    env(DEFAULT_PATH): ''
+    router.request_context.host: '%env(DEFAULT_HOST)%'
+    router.request_context.scheme: '%env(DEFAULT_SCHEME)%'
+    router.request_context.base_url: '%env(DEFAULT_PATH)%'
+
     json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
 
     notification_channel_policy:

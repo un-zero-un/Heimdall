@@ -28,11 +28,11 @@ export default function App() {
                 <Provider store={store}>
                     <MercureProvider
                         topics={[
-                            'http://localhost/api/sites/{id}',
-                            'http://localhost/api/runs/{id}',
-                            'http://localhost/api/run_check_results/{id}',
+                            process.env.API_BASE_URL + '/api/sites/{id}',
+                            process.env.API_BASE_URL + '/api/runs/{id}',
+                            process.env.API_BASE_URL + '/api/run_check_results/{id}',
                         ]}
-                        hubUrl="https://localhost/hub">
+                        hubUrl={process.env.API_BASE_URL + '/.well-known/mercure'}>
                         <BrowserRouter>
                             <AppBar/>
                             <Box pad="medium">
