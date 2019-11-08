@@ -57,7 +57,7 @@ export function trans(key: string, params: { [key: string]: string } = {}) {
 
     return Object.keys(params).reduce(
         (memo, paramKey) => {
-            return memo.replace(`%${paramKey}%`, params[paramKey]);
+            return memo.replace(`${paramKey}`, params[paramKey]);
         },
         translations[key],
     );
