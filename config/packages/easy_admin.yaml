@@ -1,0 +1,35 @@
+easy_admin:
+    design:
+        menu:
+            - { entity: Site, default: true }
+            - { entity: ConfiguredCheck }
+    entities:
+        Site:
+            class: App\Model\Site
+            controller: App\Controller\Admin\SiteController
+            list:
+                fields:
+                    - name
+                    - url
+                    - configuredChecks
+                    - createdAt
+            form:
+                fields:
+                    - name
+                    - url
+
+
+        ConfiguredCheck:
+            class: App\Model\ConfiguredCheck
+            controller: App\Controller\Admin\ConfiguredCheckController
+            list:
+                fields:
+                    - site
+                    - check
+                    - executionDelay
+                    - createdAt
+            form:
+                fields:
+                    - site
+                    - check
+                    - executionDelay

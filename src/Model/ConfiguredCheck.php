@@ -30,9 +30,10 @@ class ConfiguredCheck implements HasTimestamp, Equatable
     private UuidInterface $id;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="configuredChecks")
      */
-    private Site $site;
+    private ?Site $site;
 
     /**
      * @Groups({"get_site"})
@@ -42,16 +43,17 @@ class ConfiguredCheck implements HasTimestamp, Equatable
     private string $check;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="integer")
      */
-    private int $executionDelay;
+    private int $executionDelay = 0;
 
     /**
      * @ORM\Column(type="json", options={"jsonb": true}, nullable=true)
      */
     private ?array $config = null;
 
-    public function __construct(Site $site, string $check)
+    public function __construct(?Site $site, string $check)
     {
         $this->id    = Uuid::uuid4();
         $this->site  = $site;
@@ -65,7 +67,7 @@ class ConfiguredCheck implements HasTimestamp, Equatable
         return $this->id;
     }
 
-    public function getSite(): Site
+    public function getSite(): ?Site
     {
         return $this->site;
     }

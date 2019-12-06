@@ -106,9 +106,19 @@ class Site implements HasTimestamp
         return $this->name;
     }
 
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
     }
 
     public function getSlug(): string
@@ -226,5 +236,10 @@ class Site implements HasTimestamp
         }
 
         return $level;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }
