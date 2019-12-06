@@ -20,7 +20,6 @@
         "@types/react-redux": "^7.1.2",
         "@types/react-router-dom": "^4.3.5",
         "@types/redux-logger": "^3.0.7",
-        "@types/redux-thunk": "^2.1.0",
         "grommet": "^2.7.9",
         "grommet-icons": "^4.3.0",
         "moment": "^2.24.0",
