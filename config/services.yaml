@@ -68,3 +68,7 @@ services:
     Symfony\Component\Lock\Factory: ~
 
 
+    App\Serializer\SiteNormalizer:
+        decorates: 'api_platform.jsonld.normalizer.item'
+        arguments: { '$decorated': '@App\Serializer\SiteNormalizer.inner' }
+
