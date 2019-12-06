@@ -1,37 +1,19 @@
 import moment from 'moment';
-import {useState} from 'react';
-import {useAsyncEffect, useFetch} from '../common/hooks';
+import {useEffect, useState} from 'react';
+import {mergeRestResult, RestResult, useRestResource} from '../common/hooks';
 import {subscribeToMercureResource} from '../common/MercureProvider';
 import {Run} from '../types/run';
 import {Site, SiteCollection} from '../types/site';
 
-type SitesData = [
-    null | SiteCollection,
-    boolean,
-    boolean,
-];
+export function useSites(): RestResult<SiteCollection> {
+    const [sites, setSites] = useState<SiteCollection | null>(null);
+    const data = useRestResource<SiteCollection>('/sites');
 
-export function useSites(): SitesData {
-    const [sites, setSites]     = useState<null | SiteCollection>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError]     = useState<boolean>(false);
-
-    const fetch = useFetch();
-
-    useAsyncEffect(async () => {
-        try {
-            setLoading(true);
-
-            const res  = await fetch('/sites');
-            const json = await res.json();
-
-            setSites(json);
-        } catch (e) {
-            setError(true);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if ('success' === data.status) {
+            setSites(data.data);
         }
-    }, []);
+    }, [data]);
 
     subscribeToMercureResource<Run>('Run', run => {
         if (!sites) {
@@ -63,36 +45,18 @@ export function useSites(): SitesData {
         });
     });
 
-    return [sites, loading, error];
+    return mergeRestResult(data, sites);
 }
 
-type SiteData = [
-    null | Site,
-    boolean,
-    boolean,
-];
-
-export function useSite(id: string): SiteData {
+export function useSite(id: string): RestResult<Site> {
     const [site, setSite]       = useState<null | Site>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError]     = useState<boolean>(false);
+    const data = useRestResource<Site>(`/sites/${id}`);
 
-    const fetch = useFetch();
-
-    useAsyncEffect(async () => {
-        try {
-            setLoading(true);
-
-            const res  = await fetch(`/sites/${id}`);
-            const json = await res.json();
-
-            setSite(json);
-        } catch (e) {
-            setError(true);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if ('success' === data.status) {
+            setSite(data.data);
         }
-    }, []);
+    }, [data]);
 
 
     subscribeToMercureResource<Run>('Run', run => {
@@ -115,5 +79,5 @@ export function useSite(id: string): SiteData {
         }
     });
 
-    return [site, loading, error];
+    return mergeRestResult(data, site);
 }

@@ -12,29 +12,29 @@ type Props = {
 };
 
 export default function ({id}: Props) {
-    const [site, loading, error] = useSite(id);
+    const siteData = useSite(id);
 
     return (
         <div>
             <Title>{
-                site ? (
+                'success' === siteData.status ? (
                     <>
-                        Site {site.name}
-                        {site.lastRun && <ResultLevel level={site.lastRun.lowerResultLevel}/>}
+                        Site {siteData.data.name}
+                        {siteData.data.lastRun && <ResultLevel level={siteData.data.lastRun.lowerResultLevel}/>}
                     </>
                 ) : ''}
             </Title>
 
-            <Error error={error}/>
-            <Loader loading={loading}/>
+            <Error error={siteData.isErrored}/>
+            <Loader loading={siteData.isLoading}/>
 
-            {site && (
+            {'success' === siteData.status && (
                 <>
                     <Title level={3}>Checks</Title>
                     <CheckLevelsDatagrid
                         levels={
-                            Object.keys(site.lastLevelsGroupedByCheckers)
-                                .map(check => ({check, level: site.lastLevelsGroupedByCheckers[check]}))
+                            Object.keys(siteData.data.lastLevelsGroupedByCheckers)
+                                .map(check => ({check, level: siteData.data.lastLevelsGroupedByCheckers[check]}))
                         } />
 
                     <Title level={3}>Runs</Title>
