@@ -13,21 +13,25 @@ type Props = {
 };
 
 export default function ShowRun({id}: Props) {
-    const [run, loading, error] = useRun(id);
+    const runData = useRun(id);
 
     return (
         <div>
             <Title>
-                Run "{run && run.site && run.site.name}"
-                <RunStatus run={run} />
+                Run "{'success' === runData.status && runData.data.site && runData.data.site.name}"
+                <RunStatus run={'success' === runData.status ? runData.data : null}/>
             </Title>
 
-            {run && run.site && <RoutedButton path={`/sites/${run.site.id}`} icon={<Icons.Previous />} label="Back to site" />}
+            {
+                'success' === runData.status &&
+                runData.data.site &&
+                <RoutedButton path={`/sites/${runData.data.site.id}`} icon={<Icons.Previous/>} label="Back to site"/>
+            }
 
-            <Loader loading={loading}/>
-            <Error error={error}/>
+            <Loader loading={runData.isLoading}/>
+            <Error error={runData.isErrored}/>
 
-            <ShowRunCheckResults runId={id} />
+            <ShowRunCheckResults runId={id}/>
         </div>
     );
 }

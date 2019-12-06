@@ -7,7 +7,9 @@ type Props = {
 };
 
 export default function ShowSiteRuns({siteId}: Props) {
-    const [runs, loading, error] = useSiteRuns(siteId);
+    const runsData = useSiteRuns(siteId);
 
-    return <RunDatagrid runs={runs} loading={loading} error={error} />;
+    return <RunDatagrid runs={'success' === runsData.status ? runsData.data : null}
+                        loading={runsData.isLoading}
+                        error={runsData.isErrored} />;
 }

@@ -7,7 +7,10 @@ type Props = {
 };
 
 export default function ShowRunCheckResults({runId}: Props) {
-    const [runCheckResults, loading, error] = useRunCheckResults(runId);
+    const runCheckResultsData = useRunCheckResults(runId);
 
-    return <RunCheckResultDatagrid runCheckResults={runCheckResults} loading={loading} error={error} />;
+    return <RunCheckResultDatagrid
+        runCheckResults={'success' === runCheckResultsData.status ? runCheckResultsData.data : null}
+        loading={runCheckResultsData.isLoading}
+        error={runCheckResultsData.isErrored} />;
 }

@@ -1,35 +1,17 @@
-import {useState} from 'react';
-import {useAsyncEffect, useFetch} from '../common/hooks';
+import {useEffect, useState} from 'react';
+import {RestResult, useRestResource} from '../common/hooks';
 import {subscribeToMercureResource} from '../common/MercureProvider';
 import {Run, RunCollection} from '../types/run';
 
-type RunsData = [
-    null | RunCollection,
-    boolean,
-    boolean,
-];
+export function useSiteRuns(siteId: string): RestResult<RunCollection> {
+    const [runs, setRuns] = useState<null | RunCollection>(null);
+    const data            = useRestResource<RunCollection>(`/sites/${siteId}/runs`);
 
-export function useSiteRuns(siteId: string): RunsData {
-    const [runs, setRuns]       = useState<null | RunCollection>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError]     = useState<boolean>(false);
-
-    const fetch = useFetch();
-
-    useAsyncEffect(async () => {
-        try {
-            setLoading(true);
-
-            const res  = await fetch(`/sites/${siteId}/runs`);
-            const json = await res.json();
-
-            setRuns(json);
-        } catch (e) {
-            setError(true);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if ('success' === data.status) {
+            setRuns(data.data);
         }
-    }, []);
+    }, [data]);
 
     subscribeToMercureResource<Run>('Run', run => {
         if (!(runs && run.site)) {
@@ -47,7 +29,7 @@ export function useSiteRuns(siteId: string): RunsData {
             setRuns({
                 ...runs,
                 'hydra:totalItems': runs['hydra:totalItems'] + 1,
-                'hydra:member': [run, ...runs['hydra:member']]
+                'hydra:member':     [run, ...runs['hydra:member']],
             });
 
             return;
@@ -61,41 +43,22 @@ export function useSiteRuns(siteId: string): RunsData {
                 }
 
                 return collectionRun;
-            })
+            }),
         });
     });
 
-    return [runs, loading, error];
+    return data;
 }
 
-type RunData = [
-    null | Run,
-    boolean,
-    boolean,
-];
+export function useRun(id: string): RestResult<Run> {
+    const [run, setRun] = useState<null | Run>(null);
+    const data          = useRestResource<Run>(`/runs/${id}`);
 
-export function useRun(id: string): RunData {
-    const [run, setRun]         = useState<null | Run>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError]     = useState<boolean>(false);
-
-    const fetch = useFetch();
-
-    useAsyncEffect(async () => {
-        try {
-            setLoading(true);
-
-            const res  = await fetch(`/runs/${id}`);
-            const json = await res.json();
-
-            setRun(json);
-        } catch (e) {
-            setError(true);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if ('success' === data.status) {
+            setRun(data.data);
         }
-    }, []);
-
+    });
 
     subscribeToMercureResource<Run>('Run', mercureRun => {
         if (!(run && mercureRun)) {
@@ -109,5 +72,5 @@ export function useRun(id: string): RunData {
         setRun(mercureRun);
     });
 
-    return [run, loading, error];
+    return data;
 }
