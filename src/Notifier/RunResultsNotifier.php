@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\Notifier;
 
-use App\Checker\CheckResult;
 use App\Model\Run;
 use App\ValueObject\ResultLevel;
-use Symfony\Component\Notifier\Notification\Notification;
-use Symfony\Component\Notifier\Notifier;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\AdminRecipient;
 use Symfony\Component\Notifier\Recipient\Recipient;
