@@ -5,6 +5,7 @@ import {createLogger} from 'redux-logger';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import {base, Box, Grommet} from 'grommet';
+import BrowserNotifications from '../../notification/containers/BrowserNotifications';
 import ShowRun from '../../run/containers/ShowRun';
 import ShowSite from '../../site/containers/ShowSite';
 import AppBar from '../components/AppBar';
@@ -38,6 +39,7 @@ export default function App({baseUrl}: Props) {
                         ]}
                         hubUrl={baseUrl + '/.well-known/mercure'}>
                         <BrowserRouter>
+                            <BrowserNotifications />
                             <AppBar/>
                             <Box pad="medium">
                                 <Switch>
