@@ -45,6 +45,15 @@ class RunResultsNotifier
             $runs
         ))->toString();
 
+        $previousWorstLevel = ResultLevel::findWorst(array_filter(array_map(
+            fn(Run $run) => $run->getPreviousRun() ? ResultLevel::fromString($run->getSiteResult()) : null,
+            $runs
+        )))->toString();
+
+        if ($previousWorstLevel === $worstLevel) {
+            return;
+        }
+
         $notification = (new RunResultNotification($worstLevel, $runs))
             ->withTranslator($this->translator)
             ->withTwig($this->twig);
