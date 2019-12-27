@@ -5,21 +5,13 @@ parameters:
     env(DEFAULT_HOST): localhost
     env(DEFAULT_SCHEME): https
     env(DEFAULT_PATH): ''
+    env(NOTIFICATION_RECIPIENTS): '[]'
+
     router.request_context.host: '%env(DEFAULT_HOST)%'
     router.request_context.scheme: '%env(DEFAULT_SCHEME)%'
     router.request_context.base_url: '%env(DEFAULT_PATH)%'
 
     json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
-
-    notification_channel_policy:
-        urgent: ['chat/slack', email]
-        high: ['chat/slack', email]
-        medium: ['chat/slack']
-        low: ['chat/slack']
-    notification_mail_from: no-reply@heimdall.dev
-    notification_recipients:
-        -   phone: null
-            email: contact@heimdall.dev
 
 services:
     # default configuration for services in *this* file
@@ -27,7 +19,7 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            $notificationRecipients: '%notification_recipients%'
+            $notificationRecipients: '%env(json:NOTIFICATION_RECIPIENTS)%'
 
     _instanceof:
         App\Checker\Checker:

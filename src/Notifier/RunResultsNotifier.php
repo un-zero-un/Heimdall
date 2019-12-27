@@ -8,6 +8,7 @@ use App\Checker\CheckResult;
 use App\Model\Run;
 use App\ValueObject\ResultLevel;
 use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\Notifier;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\AdminRecipient;
 use Symfony\Component\Notifier\Recipient\Recipient;
@@ -22,9 +23,6 @@ class RunResultsNotifier
 
     private TranslatorInterface $translator;
 
-    /**
-     * @var Map<string, string>[]
-     */
     private array $notificationRecipients;
 
     public function __construct(
@@ -36,8 +34,8 @@ class RunResultsNotifier
     {
         $this->notifier               = $notifier;
         $this->translator             = $translator;
-        $this->notificationRecipients = $notificationRecipients;
         $this->twig                   = $twig;
+        $this->notificationRecipients = $notificationRecipients;
     }
 
     /**
@@ -46,7 +44,7 @@ class RunResultsNotifier
     public function notify(array $runs): void
     {
         $worstLevel = ResultLevel::findWorst(array_map(
-            fn (Run $run) => ResultLevel::fromString($run->getSiteResult()),
+            fn(Run $run) => ResultLevel::fromString($run->getSiteResult()),
             $runs
         ))->toString();
 
