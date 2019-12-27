@@ -58,8 +58,6 @@ services:
     App\Asset\DevEntrypointLookup:
         decorates: 'webpack_encore.entrypoint_lookup[_default]'
 
-
-
     Symfony\Component\Lock\StoreInterface:
         class: Symfony\Component\Lock\Store\PdoStore
         arguments:
@@ -67,8 +65,7 @@ services:
 
     Symfony\Component\Lock\Factory: ~
 
-
-    App\Serializer\SiteNormalizer:
-        decorates: 'api_platform.jsonld.normalizer.item'
-        arguments: { '$decorated': '@App\Serializer\SiteNormalizer.inner' }
-
+    App\Serializer\CheckerNameNormalizer:
+        decorates: api_platform.jsonld.normalizer.item
+        arguments:
+            $decorated: '@App\Serializer\CheckerNameNormalizer.inner'

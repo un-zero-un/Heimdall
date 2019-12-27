@@ -10,6 +10,7 @@ use App\Behavior\Equatable;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
 use App\Checker\CheckResult;
+use App\ValueObject\ResultLevel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -59,6 +60,18 @@ class Run implements HasTimestamp, Equatable
     private bool $running = false;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"get_runs_for_site", "get_run", "get_sites", "get_site"})
+     */
+    private ?string $runResult = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"get_runs_for_site", "get_run", "get_sites", "get_site"})
+     */
+    private ?string $siteResult = null;
+
+    /**
      * @ApiSubresource()
      * @ORM\OneToMany(targetEntity=RunCheckResult::class, mappedBy="run", cascade={"persist"})
      *
@@ -104,9 +117,16 @@ class Run implements HasTimestamp, Equatable
         $this->running = true;
     }
 
-    public function finish(): void
+    public function finish(string $siteResult): void
     {
-        $this->running = false;
+        $this->siteResult = $siteResult;
+        $this->running    = false;
+        $this->runResult  = ResultLevel::findWorst(
+            array_map(
+                fn(RunCheckResult $checkResult) => ResultLevel::fromString($checkResult->getLevel()),
+                $this->checkResults->toArray()
+            )
+        )->toString();
     }
 
     public function isRunning(): bool
@@ -114,24 +134,14 @@ class Run implements HasTimestamp, Equatable
         return $this->running;
     }
 
-    /**
-     * @Groups({"get_runs_for_site", "get_run", "get_sites", "get_site"})
-     */
-    public function getLowerResultLevel(): string
+    public function getRunResult(): ?string
     {
-        $level = 'success';
+        return $this->runResult;
+    }
 
-        foreach ($this->getCheckResults() as $checkResult) {
-            if ('error' === $checkResult->getLevel()) {
-                return 'error';
-            }
-
-            if ('warning' === $checkResult->getLevel()) {
-                $level = 'warning';
-            }
-        }
-
-        return $level;
+    public function getSiteResult(): ?string
+    {
+        return $this->siteResult;
     }
 
     public function isEqualTo(Equatable $equatable): bool

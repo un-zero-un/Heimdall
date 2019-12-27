@@ -17,9 +17,11 @@ Encore
     .enableBuildNotifications()
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
-    .configureBabel(() => {}, {
+    .configureBabel((config) => {
+        config.plugins.push('@babel/plugin-proposal-optional-chaining');
+    }, {
         useBuiltIns: 'usage',
-        corejs: 3
+        corejs: 3,
     })
     .configureCssLoader(options => {
         options.modules = true;

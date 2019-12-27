@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace App\Checker;
 
+use App\ValueObject\ResultLevel;
+
 class CheckResult
 {
-    private string $level;
+    private ResultLevel $level;
 
     private string $type;
 
     private array $data;
 
-    public function __construct(string $level, string $type, array $data = [])
+    public function __construct(ResultLevel $level, string $type, array $data = [])
     {
         $this->level = $level;
         $this->type  = $type;
         $this->data  = $data;
     }
 
-    public function getLevel(): string
+    public function getLevel(): ResultLevel
     {
         return $this->level;
     }
@@ -32,18 +34,5 @@ class CheckResult
     public function getData(): array
     {
         return $this->data;
-    }
-
-    public static function worstLevel(string $level1, string $level2): string
-    {
-        if ('error' === $level1 || 'error' === $level2) {
-            return 'error';
-        }
-
-        if ('warning' === $level1 || 'warning' === $level2) {
-            return 'warning';
-        }
-
-        return 'success';
     }
 }

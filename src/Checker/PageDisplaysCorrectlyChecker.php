@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Checker;
 
 use App\Model\Site;
+use App\ValueObject\ResultLevel;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -39,18 +40,18 @@ class PageDisplaysCorrectlyChecker implements Checker
             if (false === strpos($text, $config['expected'])) {
                 return [
                     new CheckResult(
-                        'error',
+                        ResultLevel::error(),
                         'text_not_found',
                         ['%selector%' => $config['selector'], '%expected%' => $config['expected'], '%page%' => $config['page']]
                     )
                 ];
             }
         } catch (\InvalidArgumentException $e) {
-            return [new CheckResult('error', 'selector_not_found', ['%selector%' => $config['selector'], '%page%' => $config['page']])];
+            return [new CheckResult(ResultLevel::error(), 'selector_not_found', ['%selector%' => $config['selector'], '%page%' => $config['page']])];
         }
 
 
-        return [new CheckResult('success', 'page_displays_correctly', ['%page%' => $config['page']])];
+        return [new CheckResult(ResultLevel::success(), 'page_displays_correctly', ['%page%' => $config['page']])];
     }
 
     public function getDefaultExecutionDelay(): int

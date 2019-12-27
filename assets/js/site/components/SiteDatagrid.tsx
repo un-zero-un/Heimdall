@@ -36,11 +36,11 @@ export default function SiteDatagrid({sites, error = false, loading = false}: Pr
                         property: 'lastRun.currentLowerResultLevel',
                         header:   'Current status',
                         render:   site => {
-                            if (site.lastRun && site.lastRun.running) {
+                            if (site.lastRun?.running) {
                                 return <Icons.FormRefresh />;
                             }
 
-                            return <ResultLevel level={site.currentLowerResultLevel} />;
+                            return <ResultLevel level={site.lastRun?.siteResult} />;
                         }
                     },
                     {

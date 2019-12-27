@@ -1,8 +1,9 @@
 import * as Icons from 'grommet-icons';
 import React from 'react';
+import {CheckResultLevel} from '../../types/check';
 
 type Props = {
-    level: 'error' | 'warning' | 'success',
+    level: CheckResultLevel,
 };
 
 export default function ResultLevel({level}: Props) {

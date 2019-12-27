@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Checker;
 
 use App\Model\Site;
+use App\ValueObject\ResultLevel;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -34,12 +35,12 @@ class LinksAvailabilityChecker implements Checker
             $response = $this->httpClient->request('GET', $url);
 
             if ($response->getStatusCode() >= 400) {
-                yield new CheckResult('warning', 'link_status_is_errored', ['%status%' => $response->getStatusCode()]);
+                yield new CheckResult(ResultLevel::warning(), 'link_status_is_errored', ['%status%' => $response->getStatusCode()]);
 
                 return;
             }
 
-            yield new CheckResult('success', 'link_status_is_ok', ['%url%' => $url]);
+            yield new CheckResult(ResultLevel::success(), 'link_status_is_ok', ['%url%' => $url]);
 
             $crawler = new Crawler($response->getContent());
             foreach ($crawler->filter('a[href]') as $a) {
@@ -65,7 +66,7 @@ class LinksAvailabilityChecker implements Checker
                 yield from $this->checkUrl($scheme, $host, $url, $checkedUrls);
             }
         } catch (\Exception $e) {
-            yield new CheckResult('error', 'no_links_to_parse_site_is_down');
+            yield new CheckResult(ResultLevel::error(), 'no_links_to_parse_site_is_down');
         }
     }
 

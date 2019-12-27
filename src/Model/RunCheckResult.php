@@ -78,7 +78,7 @@ class RunCheckResult implements HasTimestamp
     public function __construct(Run $run, ConfiguredCheck $configuredCheck, CheckResult $checkResult)
     {
         $this->id              = Uuid::uuid4();
-        $this->level           = $checkResult->getLevel();
+        $this->level           = $checkResult->getLevel()->toString();
         $this->type            = $checkResult->getType();
         $this->data            = $checkResult->getData();
         $this->run             = $run;

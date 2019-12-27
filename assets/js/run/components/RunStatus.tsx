@@ -4,7 +4,7 @@ import ResultLevel from '../../common/components/ResultLevel';
 import {Run} from '../../types/run';
 
 type Props = {
-    run: Run | null
+    run: Run | null,
 };
 
 export default function RunStatus({run}: Props) {
@@ -12,5 +12,5 @@ export default function RunStatus({run}: Props) {
         return null;
     }
 
-    return run.running ? <Icons.FormRefresh /> : <ResultLevel level={run.lowerResultLevel} />;
+    return run.running ? <Icons.FormRefresh /> : <ResultLevel level={run.siteResult} />;
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Notifier;
 
+use App\Model\Run;
+use App\ValueObject\ResultLevel;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -11,15 +13,15 @@ use Twig\Environment;
 class RunResultNotification extends Notification
 {
     private const IMPORTANCES = [
-        'error'   => Notification::IMPORTANCE_URGENT,
-        'warning' => Notification::IMPORTANCE_HIGH,
-        'success' => Notification::IMPORTANCE_LOW,
+        ResultLevel::ERROR   => Notification::IMPORTANCE_URGENT,
+        ResultLevel::WARNING => Notification::IMPORTANCE_HIGH,
+        ResultLevel::SUCCESS => Notification::IMPORTANCE_LOW,
     ];
 
     private const EMOJIS = [
-        'error'   => "\u{1F6A8}",
-        'warning' => "\u{26A0}",
-        'success' => "\u{1F49A}",
+        ResultLevel::ERROR   => "\u{1F6A8}",
+        ResultLevel::WARNING => "\u{26A0}",
+        ResultLevel::SUCCESS => "\u{1F49A}",
     ];
 
     private string $worstLevel;
@@ -51,10 +53,12 @@ class RunResultNotification extends Notification
 
     public function withTwig(Environment $twig): self
     {
-        $this->content($twig->render(
-            'notification/runResult.md.twig',
-            ['runs' => $this->runs, 'worst_level' => $this->worstLevel],
-        ));
+        $this->content(
+            $twig->render(
+                'notification/runResult.md.twig',
+                ['runs' => $this->runs, 'worst_level' => $this->worstLevel],
+            )
+        );
 
         return $this;
     }

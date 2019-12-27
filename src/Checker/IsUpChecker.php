@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Checker;
 
 use App\Model\Site;
+use App\ValueObject\ResultLevel;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class IsUpChecker implements Checker
@@ -25,13 +26,13 @@ class IsUpChecker implements Checker
             $response = $this->httpClient->request('GET', $site->getUrl(), ['timeout' => 1]);
 
             if ($response->getStatusCode() >= 400) {
-                return [new CheckResult('error', 'site_status_is_errored', ['%status_code%' => $response->getStatusCode()])];
+                return [new CheckResult(ResultLevel::error(), 'site_status_is_errored', ['%status_code%' => $response->getStatusCode()])];
             }
         } catch (\Exception $e) {
-            return [new CheckResult('error', 'site_is_down')];
+            return [new CheckResult(ResultLevel::error(), 'site_is_down')];
         }
 
-        return [new CheckResult('success', 'site_is_up')];
+        return [new CheckResult(ResultLevel::error(), 'site_is_up')];
     }
 
     public function getDefaultExecutionDelay(): int

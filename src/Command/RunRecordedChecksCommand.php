@@ -7,7 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\LockFactory;
 
 class RunRecordedChecksCommand extends Command
 {
@@ -15,9 +15,9 @@ class RunRecordedChecksCommand extends Command
 
     private CheckRunner $checkRunner;
 
-    private Factory $lockFactory;
+    private LockFactory $lockFactory;
 
-    public function __construct(CheckRunner $checkRunner, Factory $lockFactory)
+    public function __construct(CheckRunner $checkRunner, LockFactory $lockFactory)
     {
         parent::__construct();
 

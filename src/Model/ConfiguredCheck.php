@@ -53,6 +53,14 @@ class ConfiguredCheck implements HasTimestamp, Equatable
      */
     private ?array $config = null;
 
+    /**
+     * @Groups({"get_site"})
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string|null
+     */
+    private ?string $lastResult = null;
+
     public function __construct(?Site $site, string $check)
     {
         $this->id    = Uuid::uuid4();
@@ -95,6 +103,16 @@ class ConfiguredCheck implements HasTimestamp, Equatable
     public function setConfig(?array $config): void
     {
         $this->config = $config;
+    }
+
+    public function setLastResult(?string $lastResult): void
+    {
+        $this->lastResult = $lastResult;
+    }
+
+    public function getLastResult(): ?string
+    {
+        return $this->lastResult;
     }
 
     public function isEqualTo(Equatable $equatable): bool

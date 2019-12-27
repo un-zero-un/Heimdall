@@ -6,6 +6,7 @@ namespace App\Notifier;
 
 use App\Checker\CheckResult;
 use App\Model\Run;
+use App\ValueObject\ResultLevel;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\AdminRecipient;
@@ -44,10 +45,10 @@ class RunResultsNotifier
      */
     public function notify(array $runs): void
     {
-        $worstLevel = 'success';
-        foreach ($runs as $run) {
-            $worstLevel = CheckResult::worstLevel($run->getLowerResultLevel(), $worstLevel);
-        }
+        $worstLevel = ResultLevel::findWorst(array_map(
+            fn (Run $run) => ResultLevel::fromString($run->getSiteResult()),
+            $runs
+        ))->toString();
 
         $notification = (new RunResultNotification($worstLevel, $runs))
             ->withTranslator($this->translator)

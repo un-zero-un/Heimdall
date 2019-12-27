@@ -8,9 +8,9 @@ FROM node:${NODE_VERSION}-alpine AS node
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS php
 
 RUN set -eux; \
-    apk add --no-cache postgresql-client libpq acl oniguruma libstdc++; \
-    apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} postgresql-dev oniguruma-dev; \
-    docker-php-ext-install pdo_pgsql pcntl mbstring opcache; \
+    apk add --no-cache postgresql-client libpq acl oniguruma libstdc++ libxslt libgcrypt; \
+    apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} postgresql-dev oniguruma-dev libxslt-dev libgcrypt-dev; \
+    docker-php-ext-install pdo_pgsql pcntl mbstring opcache xsl; \
     apk del .build-deps
 
 

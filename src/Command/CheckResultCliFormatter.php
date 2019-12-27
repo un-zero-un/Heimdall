@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Checker\CheckResult;
+use App\ValueObject\ResultLevel;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -28,13 +29,13 @@ class CheckResultCliFormatter
         );
 
         switch ($result->getLevel()) {
-            case 'error':
+            case ResultLevel::ERROR:
                 $io->error($message);
                 break;
-            case 'warning':
+            case ResultLevel::WARNING:
                 $io->warning($message);
                 break;
-            case 'success':
+            case ResultLevel::SUCCESS:
                 $io->success($message);
                 break;
             default:

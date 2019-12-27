@@ -68,11 +68,12 @@ class Site implements HasTimestamp
     private string $url;
 
     /**
+     * @Groups({"get_site"})
      * @ORM\OneToMany(targetEntity=ConfiguredCheck::class, mappedBy="site")
      *
      * @var Collection<ConfiguredCheck>
      */
-    private Collection $configuredChecks;
+    private /*Collection */$configuredChecks;
 
     /**
      * @ApiProperty(push=true)

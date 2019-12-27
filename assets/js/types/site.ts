@@ -1,6 +1,6 @@
-import {HasTimestamp, Model, ModelCollection} from "../common/types";
-import {CheckResultLevel} from './check';
-import {Run} from "./run";
+import {HasTimestamp, Model, ModelCollection} from '../common/types';
+import {ConfiguredCheck} from './configuredCheck';
+import {Run} from './run';
 
 export type Site = Model & HasTimestamp & {
     '@type': 'Site',
@@ -8,8 +8,7 @@ export type Site = Model & HasTimestamp & {
     slug: string,
     url: string,
     lastRun: Run | null,
-    lastLevelsGroupedByCheckers: { [check: string]: string },
-    currentLowerResultLevel: CheckResultLevel,
+    configuredChecks?: ConfiguredCheck[],
 }
 
 export type SiteCollection = ModelCollection<Site>;

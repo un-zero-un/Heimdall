@@ -28,7 +28,9 @@
         "symfony/translation": "^4.4.1",
         "symfony/validator": "^4.4.1",
         "symfony/webpack-encore-bundle": "^1.6",
-        "symfony/yaml": "^4.4.1"
+        "symfony/yaml": "^4.4.1",
+        "twig/cssinliner-extra": "^3.0",
+        "twig/inky-extra": "^3.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

@@ -4,6 +4,7 @@ import Loader from '../../common/components/Loader';
 import ResultLevel from '../../common/components/ResultLevel';
 import Title from '../../common/components/Title';
 import ShowSiteRuns from '../../run/containers/ShowSiteRuns';
+import {ConfiguredCheck} from '../../types/configuredCheck';
 import CheckLevelsDatagrid from '../components/CheckLevelsDatagrid';
 import {useSite} from '../hooks';
 
@@ -20,7 +21,7 @@ export default function ({id}: Props) {
                 'success' === siteData.status ? (
                     <>
                         Site {siteData.data.name}
-                        {siteData.data.lastRun && <ResultLevel level={siteData.data.lastRun.lowerResultLevel}/>}
+                        {siteData.data.lastRun && <ResultLevel level={siteData.data.lastRun.siteResult}/>}
                     </>
                 ) : ''}
             </Title>
@@ -31,11 +32,15 @@ export default function ({id}: Props) {
             {'success' === siteData.status && (
                 <>
                     <Title level={3}>Checks</Title>
-                    <CheckLevelsDatagrid
-                        levels={
-                            Object.keys(siteData.data.lastLevelsGroupedByCheckers)
-                                .map(check => ({check, level: siteData.data.lastLevelsGroupedByCheckers[check]}))
-                        } />
+
+                    {siteData.data.configuredChecks && (
+                        <CheckLevelsDatagrid
+                            levels={
+                                siteData.data.configuredChecks
+                                    .map((check: ConfiguredCheck) => ({ check: check.check, level: check.lastResult }))
+                            }
+                        />
+                    )}
 
                     <Title level={3}>Runs</Title>
                     <ShowSiteRuns siteId={id}/>

@@ -4,9 +4,10 @@ import {Site} from './site';
 
 export type Run = Model & HasTimestamp & {
     '@type': 'Run',
-    lowerResultLevel: CheckResultLevel,
     site?: Site,
     running: boolean,
+    runResult: CheckResultLevel,
+    siteResult: CheckResultLevel,
 }
 
 export type RunCollection = ModelCollection<Run>;
