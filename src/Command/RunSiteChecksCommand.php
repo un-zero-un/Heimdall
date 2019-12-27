@@ -35,7 +35,7 @@ class RunSiteChecksCommand extends Command
             ->addArgument('site', InputArgument::REQUIRED, 'The slug of the site to be checked');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -52,5 +52,7 @@ class RunSiteChecksCommand extends Command
                 $this->formatter->formatCheckResult($io, $result);
             }
         }
+
+        return 0;
     }
 }

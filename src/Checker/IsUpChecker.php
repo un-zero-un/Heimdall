@@ -32,7 +32,7 @@ class IsUpChecker implements Checker
             return [new CheckResult(ResultLevel::error(), 'site_is_down')];
         }
 
-        return [new CheckResult(ResultLevel::error(), 'site_is_up')];
+        return [new CheckResult(ResultLevel::success(), 'site_is_up')];
     }
 
     public function getDefaultExecutionDelay(): int

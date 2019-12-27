@@ -37,7 +37,7 @@ class RunCheckCommand extends Command
             ->addArgument('check', InputArgument::REQUIRED, 'The check to run');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -52,5 +52,7 @@ class RunCheckCommand extends Command
         foreach ($results as $result) {
             $this->formatter->formatCheckResult($io, $result);
         }
+
+        return 0;
     }
 }

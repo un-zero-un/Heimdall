@@ -34,7 +34,7 @@ class RunChecksCommand extends Command
             ->setDescription('Run all checks on all sites');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -50,5 +50,7 @@ class RunChecksCommand extends Command
                 }
             }
         }
+
+        return 0;
     }
 }

@@ -48,8 +48,7 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    Gedmo\Sluggable\SluggableListener: ~
 
     App\Checker\CheckerCollection:
         arguments:
@@ -58,12 +57,12 @@ services:
     App\Asset\DevEntrypointLookup:
         decorates: 'webpack_encore.entrypoint_lookup[_default]'
 
-    Symfony\Component\Lock\StoreInterface:
+    Symfony\Component\Lock\PersistingStoreInterface:
         class: Symfony\Component\Lock\Store\PdoStore
         arguments:
             $connOrDsn: '@doctrine.dbal.default_connection'
 
-    Symfony\Component\Lock\Factory: ~
+    Symfony\Component\Lock\LockFactory: ~
 
     App\Serializer\CheckerNameNormalizer:
         decorates: api_platform.jsonld.normalizer.item

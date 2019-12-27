@@ -32,28 +32,30 @@ class ExportTranslationCommand extends Command
             ->addOption('output', 'o', InputOption::VALUE_REQUIRED);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         if (!$this->translator instanceof TranslatorBagInterface) {
             $io->error('Translator must be an instance of "' . TranslatorBagInterface::class . '"');
 
-            return;
+            return 1;
         }
 
 
         $json = 'export default ' . \json_encode(
             $this->translator->getCatalogue($input->getArgument('locale'))->all('messages'),
-            JSON_PRETTY_PRINT
+            JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR
         );
 
         if ($output = $input->getOption('output')) {
             file_put_contents($output, $json);
 
-            return;
+            return 0;
         }
 
         $output->writeln($json);
+
+        return 0;
     }
 }

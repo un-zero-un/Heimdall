@@ -43,7 +43,6 @@ RUN yarn --pure-lockfile
 
 COPY bin bin/
 COPY config config/
-COPY fixtures fixtures/
 COPY public public/
 COPY src src/
 COPY templates templates/

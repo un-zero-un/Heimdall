@@ -32,7 +32,7 @@ class RunRecordedChecksCommand extends Command
             ->setDescription('Run all checks on all sites, recorded but silent');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io   = new SymfonyStyle($input, $output);
         $lock = $this->lockFactory->createLock(self::NAME);
@@ -40,7 +40,7 @@ class RunRecordedChecksCommand extends Command
         if (!$lock->acquire()) {
             $io->error('A check is already running.');
 
-            return;
+            return 0;
         }
 
         $io->note('Running all checks');
@@ -48,5 +48,7 @@ class RunRecordedChecksCommand extends Command
         $this->checkRunner->runAll();
 
         $lock->release();
+
+        return 0;
     }
 }
