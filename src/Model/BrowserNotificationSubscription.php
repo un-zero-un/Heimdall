@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @UniqueEntity(fields={"endpoint"})
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\BrowserNotificationSubscriptionRepository")
  * @ORM\Table()
  */
 class BrowserNotificationSubscription
@@ -39,10 +39,17 @@ class BrowserNotificationSubscription
      */
     private string $endpoint;
 
-    public function __construct(string $endpoint)
+    /**
+     * @Assert\NotBlank()
+     * @ORM\Column(type="json_document", options={"jsonb": true})
+     */
+    private array $keys;
+
+    public function __construct(string $endpoint, array $keys)
     {
         $this->id       = Uuid::uuid4();
         $this->endpoint = $endpoint;
+        $this->keys     = $keys;
 
         $this->initialize();
     }
@@ -55,5 +62,10 @@ class BrowserNotificationSubscription
     public function getEndpoint(): string
     {
         return $this->endpoint;
+    }
+
+    public function getKeys(): array
+    {
+        return $this->keys;
     }
 }

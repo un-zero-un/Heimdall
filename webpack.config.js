@@ -30,9 +30,20 @@ Encore
         options.implementation = require('sass');
     })
     .enableTypeScriptLoader()
-//    .enableForkedTypeScriptTypesChecking()
+    // .enableForkedTypeScriptTypesChecking()
     .enableIntegrityHashes(Encore.isProduction())
     .enableReactPreset()
+    .addRule({
+        test: /_key.txt/i,
+        use: [
+            {
+                loader: 'raw-loader',
+                options: {
+                    esModule: false,
+                },
+            },
+        ],
+    })
 ;
 
 const config = Encore.getWebpackConfig();

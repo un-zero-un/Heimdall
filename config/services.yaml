@@ -7,6 +7,9 @@ parameters:
     env(DEFAULT_PATH): ''
     env(NOTIFICATION_RECIPIENTS): '[]'
 
+    env(VAPID_PUBLIC_KEY): '%kernel.project_dir%/config/vapid/public_key.txt'
+    env(VAPID_PRIVATE_KEY): '%kernel.project_dir%/config/vapid/private_key.txt'
+
     router.request_context.host: '%env(DEFAULT_HOST)%'
     router.request_context.scheme: '%env(DEFAULT_SCHEME)%'
     router.request_context.base_url: '%env(DEFAULT_PATH)%'
@@ -60,3 +63,15 @@ services:
         decorates: api_platform.jsonld.normalizer.item
         arguments:
             $decorated: '@App\Serializer\CheckerNameNormalizer.inner'
+
+    App\Notifier\WebPushChannel:
+        tags:
+            - { name: notifier.channel, channel: web }
+
+    Minishlink\WebPush\WebPush:
+        arguments:
+            $auth:
+                VAPID:
+                    subject: 'notification@heimdall.dev'
+                    publicKey: '%env(file:VAPID_PUBLIC_KEY)%'
+                    privateKey: '%env(file:VAPID_PRIVATE_KEY)%'

@@ -6,7 +6,7 @@ namespace App\Repository;
 
 use App\Model\RunCheckResult;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 class RunCheckResultRepository extends ServiceEntityRepository
 {

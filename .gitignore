@@ -25,3 +25,5 @@ yarn-error.log
 
 assets/js/i18n
 !.gitkeep
+
+config/vapid/*

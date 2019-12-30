@@ -6,7 +6,7 @@ namespace App\Repository;
 
 use App\Model\Site;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 class SiteRepository extends ServiceEntityRepository
 {

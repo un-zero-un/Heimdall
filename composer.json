@@ -10,6 +10,7 @@
         "dunglas/doctrine-json-odm": "^1.0.1",
         "easycorp/easyadmin-bundle": "^2.3",
         "gedmo/doctrine-extensions": "^2.4.38",
+        "minishlink/web-push": "^5.2",
         "ramsey/uuid-doctrine": "^1.5.0",
         "symfony/console": "^5.0.2",
         "symfony/css-selector": "^5.0.2",
