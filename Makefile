@@ -23,7 +23,11 @@ assets_watch: ## Build the assets and watch them. No HMR
 assets_build: ## Build production assets
 	docker-compose exec php node ./node_modules/.bin/encore production
 
+
 vapid_keys: config/vapid/public_key.txt config/vapid/private_key.txt
+
+jwt_keys: config/jwt/private.pem config/jwt/public.pem
+
 
 config/vapid:
 	mkdir -p config/vapid
@@ -48,3 +52,13 @@ config/vapid/private_key.txt: config/vapid/private_key.pem
 		tr -d '=' | \
 		tr '/+' '_-' \
 			> config/vapid/private_key.txt
+
+
+config/jwt:
+	mkdir -p config/jwt
+
+config/jwt/private.pem: config/jwt
+	openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+
+config/jwt/public.pem: config/jwt/private.pem
+	openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout

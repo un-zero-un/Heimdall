@@ -1,8 +1,24 @@
 import {DependencyList, useEffect, useState} from 'react';
+import {useJWT} from '../security/JWTProvider';
 
 export function useFetch() {
+    const {rawToken} = useJWT();
+
     return function (input: RequestInfo, init?: RequestInit) {
-        return fetch('/api' + input, init);
+        if (null === rawToken) {
+            return fetch('/api' + input, init);
+        }
+
+        return fetch(
+            '/api' + input,
+            {
+                ...init,
+                headers: {
+                    ...init?.headers,
+                    Authorization: 'Bearer ' + rawToken,
+                }
+            },
+        );
     };
 }
 

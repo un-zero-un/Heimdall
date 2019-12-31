@@ -34,7 +34,7 @@ Encore
     .enableIntegrityHashes(Encore.isProduction())
     .enableReactPreset()
     .addRule({
-        test: /_key.txt/i,
+        test: /\.(txt|pem)/i,
         use: [
             {
                 loader: 'raw-loader',
