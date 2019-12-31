@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useState} from 'react';
+import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import jwtDecode from 'jwt-decode';
 
 type JWTHeaders = {
@@ -40,8 +40,23 @@ export default function JWTProvider({children}: Props) {
         const payload = jwtDecode<JWTPayload>(rawToken);
 
         setContext({rawToken, token: {headers, payload}});
+        localStorage.setItem('jwt', rawToken);
     }
 
+    useEffect(() => {
+        const rawToken = localStorage.getItem('jwt');
+        if (null === rawToken) {
+            return;
+        }
+
+        const headers = jwtDecode<JWTHeaders>(rawToken, {header: true});
+        const payload = jwtDecode<JWTPayload>(rawToken);
+        if (isTokenExpired({headers, payload})) {
+            return;
+        }
+
+        setRawToken(rawToken);
+    }, []);
 
     return (
         <JWTContext.Provider value={{...context, setRawToken}}>
