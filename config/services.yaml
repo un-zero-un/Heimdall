@@ -8,14 +8,14 @@ parameters:
     env(NOTIFICATION_RECIPIENTS): '[]'
     env(OAUTH_GOOGLE_AUTHORIZED_DOMAINS): 'null'
 
-    env(VAPID_PUBLIC_KEY): '%kernel.project_dir%/config/vapid/public_key.txt'
-    env(VAPID_PRIVATE_KEY): '%kernel.project_dir%/config/vapid/private_key.txt'
-
     router.request_context.host: '%env(DEFAULT_HOST)%'
     router.request_context.scheme: '%env(DEFAULT_SCHEME)%'
     router.request_context.base_url: '%env(DEFAULT_PATH)%'
 
     json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+
+    vapid_default_public_key:  '%kernel.project_dir%/config/vapid/public_key.txt'
+    vapid_default_private_key: '%kernel.project_dir%/config/vapid/private_key.txt'
 
 services:
     # default configuration for services in *this* file
@@ -75,5 +75,5 @@ services:
             $auth:
                 VAPID:
                     subject: 'notification@heimdall.dev'
-                    publicKey: '%env(file:VAPID_PUBLIC_KEY)%'
-                    privateKey: '%env(file:VAPID_PRIVATE_KEY)%'
+                    publicKey: '%env(default:file:vapid_default_public_key:VAPID_PUBLIC_KEY)%'
+                    privateKey: '%env(default:file:vapid_default_private_key:VAPID_PRIVATE_KEY)%'
