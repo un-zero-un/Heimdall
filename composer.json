@@ -10,6 +10,7 @@
         "dunglas/doctrine-json-odm": "^1.0.1",
         "easycorp/easyadmin-bundle": "^2.3",
         "gedmo/doctrine-extensions": "^2.4.38",
+        "gesdinet/jwt-refresh-token-bundle": "^0.9.0",
         "knpuniversity/oauth2-client-bundle": "^1.31",
         "league/oauth2-google": "^3.0",
         "lexik/jwt-authentication-bundle": "^2.6",

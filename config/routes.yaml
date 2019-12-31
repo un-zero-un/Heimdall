@@ -6,6 +6,10 @@ connect_google_check:
     controller:   Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
     defaults:     { template: index.html.twig, uri: '' }
 
+gesdinet_jwt_refresh_token:
+    path:       /api/token/refresh
+    controller: gesdinet.jwtrefreshtoken::refresh
+
 index:
     path:         /{uri}
     controller:   Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction

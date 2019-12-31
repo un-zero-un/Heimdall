@@ -1,0 +1,3 @@
+gesdinet_jwt_refresh_token:
+    ttl: 31536000
+    ttl_update: true

@@ -13,7 +13,7 @@ export default function GoogleLoginCheck() {
         const res  = await fetch('/api/connect/google/check' + location.search);
         const json = await res.json();
 
-        setRawToken(json.token);
+        setRawToken(json.token, json.refresh_token);
     }, []);
 
     useEffect(() => {
