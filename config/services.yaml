@@ -6,6 +6,7 @@ parameters:
     env(DEFAULT_SCHEME): https
     env(DEFAULT_PATH): ''
     env(NOTIFICATION_RECIPIENTS): '[]'
+    env(OAUTH_GOOGLE_AUTHORIZED_DOMAINS): 'null'
 
     env(VAPID_PUBLIC_KEY): '%kernel.project_dir%/config/vapid/public_key.txt'
     env(VAPID_PRIVATE_KEY): '%kernel.project_dir%/config/vapid/private_key.txt'
@@ -23,6 +24,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $notificationRecipients: '%env(json:NOTIFICATION_RECIPIENTS)%'
+            $oauthGoogleAuthorizedDomains: '%env(json:OAUTH_GOOGLE_AUTHORIZED_DOMAINS)%'
 
     _instanceof:
         App\Checker\Checker:

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -30,17 +31,24 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     private UserRepository $userRepository;
 
+    /**
+     * @var string[] | null
+     */
+    private $oauthGoogleAuthorizedDomains;
+
     public function __construct(
         ClientRegistry $clientRegistry,
         UrlGeneratorInterface $urlGenerator,
         AuthenticationSuccessHandler $successHandler,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        $oauthGoogleAuthorizedDomains
     )
     {
-        $this->clientRegistry = $clientRegistry;
-        $this->urlGenerator   = $urlGenerator;
-        $this->successHandler = $successHandler;
-        $this->userRepository = $userRepository;
+        $this->clientRegistry               = $clientRegistry;
+        $this->urlGenerator                 = $urlGenerator;
+        $this->successHandler               = $successHandler;
+        $this->userRepository               = $userRepository;
+        $this->oauthGoogleAuthorizedDomains = $oauthGoogleAuthorizedDomains;
     }
 
     public function supports(Request $request)
@@ -67,6 +75,17 @@ class GoogleAuthenticator extends SocialAuthenticator
         $googleUser = $this->clientRegistry
             ->getClient('google')
             ->fetchUserFromToken($credentials);
+
+        if (
+            $this->oauthGoogleAuthorizedDomains &&
+            !in_array(
+                explode('@', $googleUser->getEmail())[1],
+                $this->oauthGoogleAuthorizedDomains,
+                true,
+            )
+        ) {
+            throw new AccessDeniedHttpException('Your email domain is not authorized here');
+        }
 
         try {
             $user = $this->userRepository->findOneByEmail($googleUser->getEmail());
