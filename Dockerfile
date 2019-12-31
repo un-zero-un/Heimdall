@@ -75,9 +75,6 @@ EXPOSE 9000
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
-
-
-
 FROM nginx:${NGINX_VERSION}-alpine AS nginx
 
 RUN rm /etc/nginx/conf.d/default.conf
@@ -96,3 +93,17 @@ RUN set -eux; \
 
 
 EXPOSE 80
+
+
+FROM php as cron
+
+RUN crontab -l | { cat; \
+    echo "*/1 * * * * /app/bin/console heimdall:run-recorded-checks"; \
+} | crontab -
+
+
+WORKDIR /app
+
+ENTRYPOINT []
+
+CMD ["crond", "-f"]

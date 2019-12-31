@@ -31,6 +31,12 @@ services:
             - POSTGRES_USER=heimdall
             - POSTGRES_PASSWORD=heimdall
 
+    cron:
+        image:      unzeroun/heimdall-cron
+        networks:   [ heimdall ]
+        build:      { target: cron, context: . }
+        depends_on: [ database, mercure ]
+
 
 
 volumes:
