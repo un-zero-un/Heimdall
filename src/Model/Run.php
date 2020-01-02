@@ -50,6 +50,7 @@ class Run implements HasTimestamp, Equatable
     /**
      * @Groups({"get_run"})
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="runs")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Site $site = null;
 

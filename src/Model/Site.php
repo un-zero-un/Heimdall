@@ -69,7 +69,7 @@ class Site implements HasTimestamp
 
     /**
      * @Groups({"get_site"})
-     * @ORM\OneToMany(targetEntity=ConfiguredCheck::class, mappedBy="site")
+     * @ORM\OneToMany(targetEntity=ConfiguredCheck::class, mappedBy="site", cascade={"remove"})
      *
      * @var Collection<ConfiguredCheck>
      */

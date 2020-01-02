@@ -32,6 +32,7 @@ class ConfiguredCheck implements HasTimestamp, Equatable
     /**
      * @Assert\NotBlank()
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="configuredChecks")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Site $site;
 
