@@ -2,29 +2,37 @@ imports:
     - { resource: './services/*.yaml' }
 
 parameters:
-    env(DEFAULT_HOST): localhost
-    env(DEFAULT_SCHEME): https
-    env(DEFAULT_PATH): ''
-    env(NOTIFICATION_RECIPIENTS): '[]'
+    env(DEFAULT_HOST):                    localhost
+    env(DEFAULT_SCHEME):                  https
+    env(DEFAULT_PATH):                    ''
+    env(NOTIFICATION_RECIPIENTS):         '[]'
     env(OAUTH_GOOGLE_AUTHORIZED_DOMAINS): 'null'
 
-    router.request_context.host: '%env(DEFAULT_HOST)%'
-    router.request_context.scheme: '%env(DEFAULT_SCHEME)%'
-    router.request_context.base_url: '%env(DEFAULT_PATH)%'
+    env(AUTHORIZED_EMAILS):               '[]'
+    env(ADMIN_EMAILS):                    '[]'
 
-    json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+    router.request_context.host:          '%env(DEFAULT_HOST)%'
+    router.request_context.scheme:        '%env(DEFAULT_SCHEME)%'
+    router.request_context.base_url:      '%env(DEFAULT_PATH)%'
 
-    vapid_default_public_key:  '%kernel.project_dir%/config/vapid/public_key.txt'
-    vapid_default_private_key: '%kernel.project_dir%/config/vapid/private_key.txt'
+    json_manifest_path:                   '%kernel.project_dir%/public/build/manifest.json'
+
+    vapid_default_public_key:             '%kernel.project_dir%/config/vapid/public_key.txt'
+    vapid_default_private_key:            '%kernel.project_dir%/config/vapid/private_key.txt'
+
+    authorized_emails:                    '%env(json:AUTHORIZED_EMAILS)%'
+    admin_emails:                         '%env(json:ADMIN_EMAILS)%'
 
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire:      true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            $notificationRecipients: '%env(json:NOTIFICATION_RECIPIENTS)%'
+            $notificationRecipients:       '%env(json:NOTIFICATION_RECIPIENTS)%'
             $oauthGoogleAuthorizedDomains: '%env(json:OAUTH_GOOGLE_AUTHORIZED_DOMAINS)%'
+            $authorizedEmails:             '%authorized_emails%'
+            $adminEmails:                  '%admin_emails%'
 
     _instanceof:
         App\Checker\Checker:
@@ -37,7 +45,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Model,Migrations,Tests,Kernel.php}'
+        exclude:  '../src/{DependencyInjection,Model,Migrations,Tests,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -45,7 +53,7 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    Gedmo\Sluggable\SluggableListener: ~
+    Gedmo\Sluggable\SluggableListener:  ~
 
     App\Checker\CheckerCollection:
         arguments:
@@ -74,6 +82,6 @@ services:
         arguments:
             $auth:
                 VAPID:
-                    subject: 'notification@heimdall.dev'
-                    publicKey: '%env(default:file:vapid_default_public_key:VAPID_PUBLIC_KEY)%'
+                    subject:    'notification@heimdall.dev'
+                    publicKey:  '%env(default:file:vapid_default_public_key:VAPID_PUBLIC_KEY)%'
                     privateKey: '%env(default:file:vapid_default_private_key:VAPID_PRIVATE_KEY)%'

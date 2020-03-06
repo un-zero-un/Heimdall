@@ -10,7 +10,14 @@ export default function GoogleLoginCheck() {
     const authenticated = isAuthenticated();
 
     useAsyncEffect(async () => {
-        const res  = await fetch('/api/connect/google/check' + location.search);
+        const res  = await fetch(
+            '/api/connect/google/check' + location.search,
+            {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            },
+        );
         const json = await res.json();
 
         setRawToken(json.token, json.refresh_token);

@@ -52,7 +52,7 @@ class User implements UserInterface, HasTimestamp
         $this->id        = Uuid::uuid4();
         $this->email     = $email;
         $this->name      = $name;
-        $this->roles     = ['ROLE_USER'];
+        $this->roles     = [];
         $this->lastLogin = null;
 
         $this->initialize();
@@ -110,5 +110,10 @@ class User implements UserInterface, HasTimestamp
     public function touch(): void
     {
         $this->lastLogin = new \DateTimeImmutable;
+    }
+
+    public function __toString()
+    {
+        return $this->getEmail();
     }
 }

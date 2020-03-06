@@ -36,12 +36,24 @@ class GoogleAuthenticator extends SocialAuthenticator
      */
     private $oauthGoogleAuthorizedDomains;
 
+    /**
+     * @var string[]
+     */
+    private array $authorizedEmails;
+
+    /**
+     * @var string[]
+     */
+    private array $adminEmails;
+
     public function __construct(
         ClientRegistry $clientRegistry,
         UrlGeneratorInterface $urlGenerator,
         AuthenticationSuccessHandler $successHandler,
         UserRepository $userRepository,
-        $oauthGoogleAuthorizedDomains
+        $oauthGoogleAuthorizedDomains,
+        $authorizedEmails,
+        $adminEmails
     )
     {
         $this->clientRegistry               = $clientRegistry;
@@ -49,6 +61,8 @@ class GoogleAuthenticator extends SocialAuthenticator
         $this->successHandler               = $successHandler;
         $this->userRepository               = $userRepository;
         $this->oauthGoogleAuthorizedDomains = $oauthGoogleAuthorizedDomains;
+        $this->authorizedEmails             = $authorizedEmails;
+        $this->adminEmails                  = $adminEmails;
     }
 
     public function supports(Request $request)
@@ -94,6 +108,21 @@ class GoogleAuthenticator extends SocialAuthenticator
             $this->userRepository->create($user);
         }
 
+        $user->setRoles([]);
+        if (
+            in_array($user->getEmail(), $this->authorizedEmails, true) ||
+            in_array('@' . explode('@', $user->getEmail())[1], $this->authorizedEmails, true)
+        ) {
+            $user->setRoles(['ROLE_USER']);
+        }
+
+        if (
+            in_array($user->getEmail(), $this->adminEmails, true) ||
+            in_array('@' . explode('@', $user->getEmail())[1], $this->adminEmails, true)
+        ) {
+            $user->setRoles(array_merge($user->getRoles(), ['ROLE_ADMIN']));
+        }
+
         $user->touch();
         $this->userRepository->update($user);
 
@@ -110,6 +139,10 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
-        return $this->successHandler->onAuthenticationSuccess($request, $token);
+        if ($request->headers->has('X-Requested-With') && 'XMLHttpRequest' === $request->headers->get('X-Requested-With')) {
+            return $this->successHandler->onAuthenticationSuccess($request, $token);
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('easyadmin'));
     }
 }
