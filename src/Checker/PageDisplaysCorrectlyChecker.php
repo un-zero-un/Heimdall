@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Checker;
 
+use App\Form\Type\CheckerConfiguration\PageDisplaysCorrectlyCheckerConfigType;
 use App\Model\Site;
 use App\ValueObject\ResultLevel;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class PageDisplaysCorrectlyChecker implements Checker
+class PageDisplaysCorrectlyChecker implements Checker, ConfigurableChecker
 {
     /**
      * @var HttpClientInterface
@@ -61,5 +62,10 @@ class PageDisplaysCorrectlyChecker implements Checker
     public static function getName(): string
     {
         return 'page_display_correctly';
+    }
+
+    public static function getConfigFormType(): string
+    {
+        return PageDisplaysCorrectlyCheckerConfigType::class;
     }
 }

@@ -33,3 +33,4 @@ easy_admin:
                     - site
                     - { property: check, type: 'App\Form\Type\CheckerChoiceType' }
                     - executionDelay
+                    - { property: config, type: 'App\Form\Type\CheckerConfiguration\CheckerConfigType' }
