@@ -25,11 +25,11 @@ easy_admin:
             list:
                 fields:
                     - site
-                    - check
+                    - { property: check, template: 'admin/configured_check/_checker.html.twig' }
                     - executionDelay
                     - createdAt
             form:
                 fields:
                     - site
-                    - check
+                    - { property: check, type: 'App\Form\Type\CheckerChoiceType' }
                     - executionDelay

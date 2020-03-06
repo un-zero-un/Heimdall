@@ -50,7 +50,6 @@ class PageDisplaysCorrectlyChecker implements Checker
             return [new CheckResult(ResultLevel::error(), 'selector_not_found', ['%selector%' => $config['selector'], '%page%' => $config['page']])];
         }
 
-
         return [new CheckResult(ResultLevel::success(), 'page_displays_correctly', ['%page%' => $config['page']])];
     }
 

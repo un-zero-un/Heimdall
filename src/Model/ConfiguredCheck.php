@@ -7,6 +7,7 @@ namespace App\Model;
 use App\Behavior\Equatable;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
+use App\Checker\Checker;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -84,6 +85,15 @@ class ConfiguredCheck implements HasTimestamp, Equatable
     public function getCheck(): string
     {
         return $this->check;
+    }
+
+    public function setCheck($check): void
+    {
+        if ($check instanceof Checker) {
+            $check = get_class($check);
+        }
+
+        $this->check = $check;
     }
 
     public function getExecutionDelay(): int
