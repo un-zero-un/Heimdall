@@ -82,6 +82,11 @@ class ConfiguredCheck implements HasTimestamp, Equatable
         return $this->site;
     }
 
+    public function setSite(?Site $site): void
+    {
+        $this->site = $site;
+    }
+
     public function getCheck(): string
     {
         return $this->check;
