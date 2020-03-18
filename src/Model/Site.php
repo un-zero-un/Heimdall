@@ -79,7 +79,7 @@ class Site implements HasTimestamp
      * @ApiProperty(push=true)
      * @ApiSubresource()
      * @ORM\OrderBy({"createdAt": "DESC"})
-     * @ORM\OneToMany(targetEntity=Run::class, mappedBy="site")
+     * @ORM\OneToMany(targetEntity=Run::class, mappedBy="site", cascade={"remove"})
      *
      * @var Collection<Run>
      */
