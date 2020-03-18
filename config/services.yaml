@@ -83,5 +83,5 @@ services:
             $auth:
                 VAPID:
                     subject:    'notification@heimdall.dev'
-                    publicKey:  '%env(default:file:vapid_default_public_key:VAPID_PUBLIC_KEY)%'
-                    privateKey: '%env(default:file:vapid_default_private_key:VAPID_PRIVATE_KEY)%'
+                    publicKey:  '%env(VAPID_PUBLIC_KEY)%'
+                    privateKey: '%env(VAPID_PRIVATE_KEY)%'

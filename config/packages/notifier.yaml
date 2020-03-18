@@ -3,15 +3,9 @@ framework:
         texter_transports: ~
         chatter_transports:
             slack: '%env(SLACK_DSN)%'
-#
-#        channel_policy:
-#            urgent: ['chat/slack', email, web]
-#            high:   ['chat/slack', email, web]
-#            medium: ['chat/slack']
-#            low:    ['chat/slack']
 
         channel_policy:
-            urgent: [web]
-            high:   [web]
-            medium: [web]
-            low:    [web]
+            urgent: ['chat/slack', email, web]
+            high:   ['chat/slack', email, web]
+            medium: ['chat/slack']
+            low:    ['chat/slack']

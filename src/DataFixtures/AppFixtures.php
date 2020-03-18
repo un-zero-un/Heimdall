@@ -109,7 +109,7 @@ class AppFixtures extends Fixture
         $configuredCheck2->setConfig([
             'page'     => '/',
             'selector' => 'h1',
-            'expected' => ' L\'agence de com',
+            'expected' => 'L\'agence de com',
         ]);
 
         $configuredCheck3 = new ConfiguredCheck($site, LinksAvailabilityChecker::class);
