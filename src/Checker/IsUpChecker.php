@@ -23,7 +23,7 @@ class IsUpChecker implements Checker
     public function check(Site $site, array $config = []): iterable
     {
         try {
-            $response = $this->httpClient->request('GET', $site->getUrl(), ['timeout' => 1]);
+            $response = $this->httpClient->request('GET', $site->getUrl(), ['max_duration' => 10]);
 
             if ($response->getStatusCode() >= 400) {
                 return [new CheckResult(ResultLevel::error(), 'site_status_is_errored', ['%status_code%' => $response->getStatusCode()])];

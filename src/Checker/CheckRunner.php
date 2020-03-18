@@ -6,6 +6,7 @@ namespace App\Checker;
 
 use App\Model\ConfiguredCheck;
 use App\Model\Run;
+use App\Model\RunCheckResult;
 use App\Model\Site;
 use App\Notifier\RunResultsNotifier;
 use App\Repository\RunRepository;
@@ -40,7 +41,10 @@ class CheckRunner
         $this->lastResultsCompiler = $lastResultsCompiler;
     }
 
-    public function runForSite(Site $site): Run
+    /**
+     * @return \Generator<RunCheckResult>
+     */
+    public function runForSite(Site $site): \Generator
     {
         $lastRun = $site->getLastRun();
         $run     = Run::publish($site);
@@ -66,24 +70,39 @@ class CheckRunner
             )->toString());
 
             foreach ($results as $result) {
-                $run->addCheckResult($configuredCheck, $result);
+                $runCheckResult = $run->addCheckResult($configuredCheck, $result);
                 $this->runRepository->update($run);
+
+                yield $runCheckResult;
             }
         }
 
         $run->finish($this->lastResultsCompiler->getCurrentLowerResultLevel($site));
         $this->runRepository->update($run);
-
-        return $run;
     }
 
-    public function runAll(): void
+    /**
+     * @return \Generator<RunCheckResult>
+     */
+    public function runAll(): \Generator
     {
-        $runs = [];
+        $results = [];
         foreach ($this->siteRepository->findAll() as $site) {
-            $runs[] = $this->runForSite($site);
+            foreach ($this->runForSite($site) as $result) {
+                $results[] = $result;
+
+                yield $result;
+            }
         }
 
-        $this->notifier->notify($runs);
+        $this->notifier->notify(
+            array_unique(
+                array_map(
+                    fn (RunCheckResult $result) => $result->getRun(),
+                    $results
+                ),
+                SORT_REGULAR
+            )
+        );
     }
 }

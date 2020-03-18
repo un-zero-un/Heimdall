@@ -25,7 +25,7 @@ class PageDisplaysCorrectlyChecker implements Checker, ConfigurableChecker
     public function check(Site $site, array $config = []): iterable
     {
         try {
-            $response = $this->httpClient->request('GET', $site->getUrl() . $config['page'], ['timeout' => 1]);
+            $response = $this->httpClient->request('GET', $site->getUrl() . $config['page'], ['max_duration' => 1]);
 
             if ($response->getStatusCode() >= 400) {
                 return [];

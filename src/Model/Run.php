@@ -122,9 +122,15 @@ class Run implements HasTimestamp, Equatable
         return $this->checkResults;
     }
 
-    public function addCheckResult(ConfiguredCheck $configuredCheck, CheckResult $checkResult): void
+    /**
+     * @return RunCheckResult
+     */
+    public function addCheckResult(ConfiguredCheck $configuredCheck, CheckResult $checkResult): RunCheckResult
     {
-        $this->checkResults->add(new RunCheckResult($this, $configuredCheck, $checkResult));
+        $runCheckResult = new RunCheckResult($this, $configuredCheck, $checkResult);
+        $this->checkResults->add($runCheckResult);
+
+        return $runCheckResult;
     }
 
     public function begin(): void

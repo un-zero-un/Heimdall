@@ -9,9 +9,11 @@ FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS php
 
 RUN set -eux; \
     apk add --no-cache postgresql-client libpq acl oniguruma libstdc++ libxslt libgcrypt gmp; \
+    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main libcurl curl; \
     apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} postgresql-dev oniguruma-dev libxslt-dev libgcrypt-dev gmp-dev; \
-    docker-php-ext-install pdo_pgsql pcntl mbstring opcache xsl gmp; \
-    apk del .build-deps
+    apk add --no-cache --virtual .edge-build-deps --repository http://dl-cdn.alpinelinux.org/alpine/edge/main curl-dev; \
+    docker-php-ext-install pdo_pgsql pcntl mbstring opcache xsl gmp curl; \
+    apk del .build-deps .edge-build-deps
 
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Checker\CheckRunner;
+use App\Model\RunCheckResult;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,19 +36,29 @@ class RunRecordedChecksCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io   = new SymfonyStyle($input, $output);
-        $lock = $this->lockFactory->createLock(self::NAME);
+        /*$lock = $this->lockFactory->createLock(self::NAME, 600);
 
         if (!$lock->acquire()) {
             $io->error('A check is already running.');
 
             return 0;
-        }
+        }*/
 
         $io->note('Running all checks');
 
-        $this->checkRunner->runAll();
+        foreach ($this->checkRunner->runAll() as $runCheckResult) {
+            /** @var RunCheckResult $runCheckResult */
+            $io->comment(
+                sprintf(
+                    '%s, %s : %s',
+                    $runCheckResult->getRun()->getSite(),
+                    $runCheckResult->getConfiguredCheck()->getCheck(),
+                    $runCheckResult->getLevel()
+                )
+            );
+        }
 
-        $lock->release();
+        //$lock->release();
 
         return 0;
     }
