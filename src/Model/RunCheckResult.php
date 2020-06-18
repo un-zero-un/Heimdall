@@ -50,7 +50,7 @@ class RunCheckResult implements HasTimestamp
 
     /**
      * @Groups({"get_site"})
-     * @ORM\ManyToOne(targetEntity=ConfiguredCheck::class)
+     * @ORM\ManyToOne(targetEntity=ConfiguredCheck::class, cascade={"remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ConfiguredCheck $configuredCheck;

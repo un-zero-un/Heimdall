@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Notifier;
 
 use App\Model\Run;
+use App\Repository\RunRepository;
 use App\ValueObject\ResultLevel;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\AdminRecipient;
@@ -22,10 +23,13 @@ class RunResultsNotifier
 
     private array $notificationRecipients;
 
+    private RunRepository $runRepository;
+
     public function __construct(
         NotifierInterface $notifier,
         Environment $twig,
         TranslatorInterface $translator,
+        RunRepository $runRepository,
         array $notificationRecipients
     )
     {
@@ -33,6 +37,7 @@ class RunResultsNotifier
         $this->translator             = $translator;
         $this->twig                   = $twig;
         $this->notificationRecipients = $notificationRecipients;
+        $this->runRepository = $runRepository;
     }
 
     /**
@@ -46,7 +51,7 @@ class RunResultsNotifier
         ))->toString();
 
         $previousWorstLevel = ResultLevel::findWorst(array_filter(array_map(
-            fn(Run $run) => $run->getPreviousRun() ? ResultLevel::fromString($run->getSiteResult()) : null,
+            fn(Run $run) => $this->runRepository->findPrevious($run) ? ResultLevel::fromString($run->getSiteResult()) : null,
             $runs
         )))->toString();
 

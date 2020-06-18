@@ -56,7 +56,7 @@ class ResultLevel
         $currentLevel = self::fromString(array_key_first(self::LEVEL_WEIGHTS));
         foreach ($levels as $level) {
             if ($level->level === $maxLevel) {
-                return $maxLevel;
+                return new self(array_key_last(self::LEVEL_WEIGHTS));
             }
 
             if (self::LEVEL_WEIGHTS[$level->level] > self::LEVEL_WEIGHTS[$currentLevel->level]) {

@@ -49,18 +49,10 @@ class Run implements HasTimestamp, Equatable
 
     /**
      * @Groups({"get_run"})
-     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="runs")
+     * @ORM\ManyToOne(targetEntity=Site::class)
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Site $site = null;
-
-    /**
-     * @ORM\OneToOne(targetEntity=Run::class)
-     * @ORM\JoinColumn(nullable=true)
-     *
-     * @var Run|null
-     */
-    private ?Run $previousRun = null;
 
     /**
      * @ORM\Column(type="boolean")
@@ -92,15 +84,8 @@ class Run implements HasTimestamp, Equatable
     {
         $this->id           = Uuid::uuid4();
         $this->checkResults = new ArrayCollection;
+        $this->site         = $site;
 
-
-        if ($site->getLastRun()) {
-            $this->previousRun = $site->getLastRun();
-        }
-
-        $this->site = $site;
-
-        $this->site->addRun($this);
         $this->initialize();
     }
 
@@ -163,11 +148,6 @@ class Run implements HasTimestamp, Equatable
     public function getSiteResult(): ?string
     {
         return $this->siteResult;
-    }
-
-    public function getPreviousRun(): ?Run
-    {
-        return $this->previousRun;
     }
 
     public function isEqualTo(Equatable $equatable): bool

@@ -8,22 +8,31 @@ use App\Model\ConfiguredCheck;
 use App\Model\Run;
 use App\Model\RunCheckResult;
 use App\Model\Site;
+use App\Repository\RunRepository;
 use App\ValueObject\ResultLevel;
+use Doctrine\ORM\UnexpectedResultException;
 
 class SiteLastResultsCompiler
 {
+    private RunRepository $runRepository;
+
+    public function __construct(RunRepository $runRepository)
+    {
+        $this->runRepository = $runRepository;
+    }
+
     public function getCurrentLowerResultLevel(Site $site): string
     {
-        if (null === $site->getLastRun()) {
+        try {
+            return ResultLevel::findWorst(
+                array_map(
+                    fn(RunCheckResult $checkResult) => ResultLevel::fromString($checkResult->getLevel()),
+                    $this->getLastResultsGroupedByCheckTypes($site)
+                )
+            )->toString();
+        } catch (UnexpectedResultException $e) {
             return ResultLevel::UNKNOWN;
         }
-
-        return ResultLevel::findWorst(
-            array_map(
-                fn (RunCheckResult $checkResult) => ResultLevel::fromString($checkResult->getLevel()),
-                $this->getLastResultsGroupedByCheckTypes($site)
-            )
-        )->toString();
     }
 
     private function getLastResultsGroupedByCheckTypes(Site $site): array
@@ -36,15 +45,12 @@ class SiteLastResultsCompiler
             0
         );
 
-        $lastRun = $site->getLastRun();
+        $lastRun = $this->runRepository->findLastForSite($site);
         if (null === $lastRun) {
             return [];
         }
-        $runs = $site->getRuns()->filter(
-            static function (Run $run) use ($maxDuration, $lastRun) {
-                return $run->getUpdatedAt() > $lastRun->getUpdatedAt()->sub(new \DateInterval('PT' . $maxDuration . 'S'));
-            }
-        );
+
+        $runs = $this->runRepository->findLastsForSite($site, $maxDuration);
 
         /** @var RunCheckResult[] $lastCheckResults */
         $lastCheckResults = [];

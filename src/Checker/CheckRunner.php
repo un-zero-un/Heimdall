@@ -13,6 +13,7 @@ use App\Repository\RunRepository;
 use App\Repository\SiteRepository;
 use App\ResultCompiler\SiteLastResultsCompiler;
 use App\ValueObject\ResultLevel;
+use Doctrine\ORM\UnexpectedResultException;
 
 class CheckRunner
 {
@@ -32,8 +33,7 @@ class CheckRunner
         CheckerCollection $checkerCollection,
         RunResultsNotifier $notifier,
         SiteLastResultsCompiler $lastResultsCompiler
-    )
-    {
+    ) {
         $this->runRepository       = $runRepository;
         $this->siteRepository      = $siteRepository;
         $this->checkerCollection   = $checkerCollection;
@@ -46,11 +46,16 @@ class CheckRunner
      */
     public function runForSite(Site $site): \Generator
     {
-        $lastRun = $site->getLastRun();
-        $run     = Run::publish($site);
+        try {
+            $lastRun = $this->runRepository->findLastForSite($site);
+        } catch (UnexpectedResultException $e) {
+            $lastRun = null;
+        }
+        $run = Run::publish($site);
 
         $run->begin();
         $this->runRepository->save($run);
+
         foreach ($site->getConfiguredChecks() as $configuredCheck) {
             /** @var ConfiguredCheck $configuredCheck */
             $checker        = $this->checkerCollection->get($configuredCheck->getCheck());
@@ -62,12 +67,14 @@ class CheckRunner
             $results = $checker->check($site, $configuredCheck->getConfig() ?: []);
             $results = is_array($results) ? $results : iterator_to_array($results);
 
-            $configuredCheck->setLastResult(ResultLevel::findWorst(
-                array_map(
-                    fn (CheckResult $checkResult) => $checkResult->getLevel(),
-                    $results
-                )
-            )->toString());
+            $configuredCheck->setLastResult(
+                ResultLevel::findWorst(
+                    array_map(
+                        fn(CheckResult $checkResult) => $checkResult->getLevel(),
+                        $results
+                    )
+                )->toString()
+            );
 
             foreach ($results as $result) {
                 $runCheckResult = $run->addCheckResult($configuredCheck, $result);
@@ -98,7 +105,7 @@ class CheckRunner
         $this->notifier->notify(
             array_unique(
                 array_map(
-                    fn (RunCheckResult $result) => $result->getRun(),
+                    fn(RunCheckResult $result) => $result->getRun(),
                     $results
                 ),
                 SORT_REGULAR

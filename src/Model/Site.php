@@ -75,16 +75,6 @@ class Site implements HasTimestamp
      */
     private /*Collection */$configuredChecks;
 
-    /**
-     * @ApiProperty(push=true)
-     * @ApiSubresource()
-     * @ORM\OrderBy({"createdAt": "DESC"})
-     * @ORM\OneToMany(targetEntity=Run::class, mappedBy="site", cascade={"remove"})
-     *
-     * @var Collection<Run>
-     */
-    private Collection $runs;
-
     public function __construct(string $name, string $url)
     {
         $this->id               = Uuid::uuid4();
@@ -92,7 +82,6 @@ class Site implements HasTimestamp
         $this->name             = $name;
         $this->url              = $url;
         $this->configuredChecks = new ArrayCollection;
-        $this->runs             = new ArrayCollection;
 
         $this->initialize();
     }
@@ -133,31 +122,6 @@ class Site implements HasTimestamp
     public function getConfiguredChecks(): Collection
     {
         return $this->configuredChecks;
-    }
-
-    public function addRun(Run $run): void
-    {
-        $this->runs->add($run);
-    }
-
-    /**
-     * @return Collection<Run>
-     */
-    public function getRuns(): Collection
-    {
-        return $this->runs;
-    }
-
-    /**
-     * @Groups({"get_sites", "get_site"})
-     */
-    public function getLastRun(): ?Run
-    {
-        if (0 === count($this->getRuns())) {
-            return null;
-        }
-
-        return $this->getRuns()->first();
     }
 
     public function __toString()
