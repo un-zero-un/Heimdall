@@ -54,17 +54,15 @@ class RunResultsNotifier
             function (Run $run) {
                 $previousRun = $this->runRepository->findPrevious($run);
 
-                return $previousRun ? ResultLevel::fromString($previousRun->getSiteResult()) : null;
+                return $previousRun && $previousRun->getSiteResult() ? ResultLevel::fromString($previousRun->getSiteResult()) : null;
             },
             $runs
         )))->toString();
-\dump($worstLevel);
-\dump($previousWorstLevel);
+
         if ($previousWorstLevel === $worstLevel) {
-            dump('no go');
             return;
         }
-dump('go');
+
         $notification = (new RunResultNotification($worstLevel, $runs))
             ->withTranslator($this->translator)
             ->withTwig($this->twig);

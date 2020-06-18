@@ -65,9 +65,11 @@ class RunRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('run')
             ->where('run.createdAt < :date')
+            ->andWhere('run.site = :site')
             ->orderBy('run.createdAt', 'DESC')
             ->setMaxResults(1)
             ->setParameter('date', $run->getCreatedAt())
+            ->setParameter('site', $run->getSite())
             ->getQuery()
             ->getOneOrNullResult();
     }
