@@ -5,7 +5,7 @@ import {Run, RunCollection} from '../types/run';
 
 export function useSiteRuns(siteId: string): RestResult<RunCollection> {
     const [runs, setRuns] = useState<null | RunCollection>(null);
-    const data            = useRestResource<RunCollection>(`/sites/${siteId}/runs`);
+    const data            = useRestResource<RunCollection>(`/runs?site=${siteId}`);
 
     useEffect(() => {
         if ('success' === data.status) {

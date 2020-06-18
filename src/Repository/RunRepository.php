@@ -50,6 +50,17 @@ class RunRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findLasts(Site $site): array
+    {
+        return $this->createQueryBuilder('run')
+            ->where('run.site = :site')
+            ->orderBy('run.createdAt', 'DESC')
+            ->setParameter('site', $site)
+            ->setMaxResults(30)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findPrevious(Run $run): ?Run
     {
         return $this->createQueryBuilder('run')

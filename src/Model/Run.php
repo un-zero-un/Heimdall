@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Behavior\Equatable;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
@@ -23,14 +25,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      mercure=true,
  *      attributes={"order"={"createdAt": "DESC"}},
  *      normalizationContext={"groups": {"get_run", "timestamp"}},
- *      subresourceOperations={
- *           "api_sites_runs_get_subresource": {"normalization_context": {"groups": {"get_runs_for_site", "timestamp"}}}
- *      },
- *      collectionOperations={},
+ *      collectionOperations={
+ *           "get": {
+ *               "normalization_context": {"groups": {"get_runs_for_site", "timestamp"}},
+ *           }
+ *     },
  *      itemOperations={
  *          "get": {"normalization_context": {"groups": {"get_run", "timestamp"}}}
  *      }
  * )
+ * @ApiFilter(SearchFilter::class, properties={"site"})
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\RunRepository")
  * @ORM\Table()
