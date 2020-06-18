@@ -29,13 +29,17 @@ class LinksAvailabilityChecker implements Checker
         return $this->checkUrl($parsedUrl['scheme'] ?? 'http', $parsedUrl['host'], $site->getUrl(), $checkedUrls);
     }
 
-    private function checkUrl(string $scheme, string $host, string $url, array $checkedUrls): iterable
+    private function checkUrl(string $scheme, string $host, string $url, array &$checkedUrls): iterable
     {
         try {
             $response = $this->httpClient->request('GET', $url);
 
             if ($response->getStatusCode() >= 400) {
-                yield new CheckResult(ResultLevel::warning(), 'link_status_is_errored', ['%status%' => $response->getStatusCode()]);
+                yield new CheckResult(
+                    ResultLevel::warning(),
+                    'link_status_is_errored',
+                    ['%status%' => $response->getStatusCode(), '%url%' => $url]
+                );
 
                 return;
             }

@@ -25,7 +25,17 @@ class PageDisplaysCorrectlyChecker implements Checker, ConfigurableChecker
     public function check(Site $site, array $config = []): iterable
     {
         try {
-            $response = $this->httpClient->request('GET', $site->getUrl() . $config['page'], ['max_duration' => 1]);
+            $response = $this->httpClient->request(
+                'GET',
+                rtrim($site->getUrl(), '/') . '/' . ltrim($config['page'], '/'),
+                [
+                    'max_duration' => 10,
+                    'headers'      => [
+                        'Accept' => '*/*',
+                        'User-Agent' => 'Heimdall / Symfony HttpClient'
+                    ]
+                ]
+            );
 
             if ($response->getStatusCode() >= 400) {
                 return [];
@@ -34,7 +44,8 @@ class PageDisplaysCorrectlyChecker implements Checker, ConfigurableChecker
             return [];
         }
 
-        $crawler = new Crawler($response->getContent());
+        $content = $response->getContent();
+        $crawler = new Crawler($content);
 
         try {
             $text = $crawler->filter($config['selector'])->text();

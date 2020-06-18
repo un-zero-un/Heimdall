@@ -9,6 +9,7 @@ check_result:
         page_displays_correctly: Page "%page%" displays correctly
 
         link_status_is_ok: Link to "%url%" is followable
+        link_status_is_errored: 'Link to "%url%" is errored (status code : %status%)'
 
     checker:
         is_up: Site is up
