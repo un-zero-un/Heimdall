@@ -25,6 +25,9 @@
     "behat/transliterator": {
         "version": "1.2-dev"
     },
+    "brick/math": {
+        "version": "0.8.15"
+    },
     "composer/semver": {
         "version": "1.5.1"
     },
@@ -122,6 +125,9 @@
     "doctrine/reflection": {
         "version": "1.0.x-dev"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.1.0"
+    },
     "dunglas/doctrine-json-odm": {
         "version": "0.1",
         "recipe": {
@@ -130,18 +136,6 @@
             "version": "0.1",
             "ref": "c2ab78f625df0c89af5908d50a28602ff8c4919f"
         }
-    },
-    "easycorp/easy-log-handler": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "70062abc2cd58794d2a90274502f81b55cd9951b"
-        },
-        "files": [
-            "config/packages/dev/easy_log_handler.yaml"
-        ]
     },
     "easycorp/easyadmin-bundle": {
         "version": "2.0",
@@ -185,9 +179,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
-    },
-    "jdorn/sql-formatter": {
-        "version": "1.3.x-dev"
     },
     "knpuniversity/oauth2-client-bundle": {
         "version": "1.20",
@@ -303,6 +294,9 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "ramsey/collection": {
+        "version": "1.0.1"
+    },
     "ramsey/uuid": {
         "version": "3.x-dev"
     },
@@ -375,6 +369,9 @@
     },
     "symfony/dependency-injection": {
         "version": "4.4.x-dev"
+    },
+    "symfony/deprecation-contracts": {
+        "version": "v2.1.2"
     },
     "symfony/doctrine-bridge": {
         "version": "4.4.x-dev"
@@ -546,17 +543,26 @@
             "tests/.gitignore"
         ]
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.17.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.12.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "1.12-dev"
     },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.17.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "1.12-dev"
     },
     "symfony/polyfill-php73": {
         "version": "1.12-dev"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.17.0"
     },
     "symfony/profiler-pack": {
         "version": "dev-master"
@@ -617,6 +623,9 @@
     },
     "symfony/stopwatch": {
         "version": "4.4.x-dev"
+    },
+    "symfony/string": {
+        "version": "v5.1.2"
     },
     "symfony/test-pack": {
         "version": "dev-master"
