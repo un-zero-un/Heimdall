@@ -65,7 +65,7 @@ class SiteLastRunNormalizer implements NormalizerInterface, DenormalizerInterfac
         return $this->decorated->denormalize($data, $type, $format, $context);
     }
 
-    public function supportsDenormalization($data, string $type, string $format = null): bool
+    public function supportsDenormalization($data, string $type, string $format = null)
     {
         return $this->decorated->supportsDenormalization($data, $type, $format);
     }
