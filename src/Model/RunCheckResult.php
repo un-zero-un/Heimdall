@@ -27,7 +27,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      }
  * )
  * @ORM\Entity()
- * @ORM\Table()
+ * @ORM\Table(
+ *     indexes={
+ *          @ORM\Index(name="run_check_result_created_at", columns={"created_at"})
+ *     }
+ * )
  * @ORM\HasLifecycleCallbacks()
  */
 class RunCheckResult implements HasTimestamp

@@ -42,12 +42,13 @@ class RunRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('run')
             ->where('run.site = :site')
-            ->andWhere('run.updatedAt > :date_limit')
+            ->andWhere('run.updatedAt >= :date_limit')
             ->orderBy('run.createdAt', 'DESC')
             ->setParameter('site', $site)
             ->setParameter('date_limit', new \DateTimeImmutable('-' . $maxDelay . ' seconds'))
             ->getQuery()
             ->getResult();
+
     }
 
     public function findLasts(Site $site): array

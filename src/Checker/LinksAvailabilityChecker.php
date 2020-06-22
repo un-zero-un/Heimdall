@@ -70,7 +70,14 @@ class LinksAvailabilityChecker implements Checker
                 yield from $this->checkUrl($scheme, $host, $url, $checkedUrls);
             }
         } catch (\Exception $e) {
-            yield new CheckResult(ResultLevel::error(), 'no_links_to_parse_site_is_down');
+            yield new CheckResult(
+                ResultLevel::error(),
+                'no_links_to_parse_site_is_down',
+                [
+                    '%url%'         => $url,
+                    '%status_code%' => $response ? $response->getStatusCode() : null,
+                ]
+            );
         }
     }
 

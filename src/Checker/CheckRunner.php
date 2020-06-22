@@ -67,15 +67,6 @@ class CheckRunner
             $results = $checker->check($site, $configuredCheck->getConfig() ?: []);
             $results = is_array($results) ? $results : iterator_to_array($results);
 
-            $configuredCheck->setLastResult(
-                ResultLevel::findWorst(
-                    array_map(
-                        fn(CheckResult $checkResult) => $checkResult->getLevel(),
-                        $results
-                    )
-                )->toString()
-            );
-
             foreach ($results as $result) {
                 $runCheckResult = $run->addCheckResult($configuredCheck, $result);
                 $this->runRepository->update($run);

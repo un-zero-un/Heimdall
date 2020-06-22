@@ -26,7 +26,16 @@ class IsUpChecker implements Checker
             $response = $this->httpClient->request('GET', $site->getUrl(), ['max_duration' => 10]);
 
             if ($response->getStatusCode() >= 400) {
-                return [new CheckResult(ResultLevel::error(), 'site_status_is_errored', ['%status_code%' => $response->getStatusCode()])];
+                return [
+                    new CheckResult(
+                        ResultLevel::error(),
+                        'site_status_is_errored',
+                        [
+                            '%status_code%' => $response->getStatusCode(),
+                            '%url%'         => $site->getUrl()
+                        ]
+                    )
+                ];
             }
         } catch (\Exception $e) {
             return [new CheckResult(ResultLevel::error(), 'site_is_down')];

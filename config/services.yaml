@@ -79,6 +79,11 @@ services:
         arguments:
             $decorated: '@App\Serializer\SiteLastRunNormalizer.inner'
 
+    App\Serializer\SiteLastResultsNormalizer:
+        decorates: api_platform.jsonld.normalizer.item
+        arguments:
+            $decorated: '@App\Serializer\SiteLastResultsNormalizer.inner'
+
     App\Notifier\WebPushChannel:
         tags:
             - { name: notifier.channel, channel: web }

@@ -11,6 +11,8 @@ check_result:
         link_status_is_ok: Link to "%url%" is followable
         link_status_is_errored: 'Link to "%url%" is errored (status code : %status%)'
 
+        no_links_to_parse_site_is_down: 'Unable to check link availability, page is down (url: %url, status code: %status_code%)'
+
     checker:
         is_up: Site is up
         links_availability: Links are followable

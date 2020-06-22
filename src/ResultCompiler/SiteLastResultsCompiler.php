@@ -8,6 +8,7 @@ use App\Model\ConfiguredCheck;
 use App\Model\Run;
 use App\Model\RunCheckResult;
 use App\Model\Site;
+use App\Repository\RunCheckResultRepository;
 use App\Repository\RunRepository;
 use App\ValueObject\ResultLevel;
 use Doctrine\ORM\UnexpectedResultException;
@@ -16,9 +17,12 @@ class SiteLastResultsCompiler
 {
     private RunRepository $runRepository;
 
-    public function __construct(RunRepository $runRepository)
+    private RunCheckResultRepository $runCheckResultRepository;
+
+    public function __construct(RunRepository $runRepository, RunCheckResultRepository $runCheckResultRepository)
     {
-        $this->runRepository = $runRepository;
+        $this->runRepository            = $runRepository;
+        $this->runCheckResultRepository = $runCheckResultRepository;
     }
 
     public function getCurrentLowerResultLevel(Site $site): string
@@ -37,39 +41,25 @@ class SiteLastResultsCompiler
 
     private function getLastResultsGroupedByCheckTypes(Site $site): array
     {
-        $maxDuration = array_reduce(
-            $site->getConfiguredChecks()->toArray(),
-            static function (int $memo, ConfiguredCheck $configuredCheck) {
-                return max($memo, $configuredCheck->getExecutionDelay());
-            },
-            0
-        );
+        $runCheckResults = $this->runCheckResultRepository->findLastOfEachCheckClassForSite($site);
 
-        $lastRun = $this->runRepository->findLastForSite($site);
-        if (null === $lastRun) {
-            return [];
-        }
+        return array_reduce(
+            $runCheckResults,
+            static function (array $memo, RunCheckResult $result) {
+                $check = $result->getConfiguredCheck()->getCheck();
+                if (!isset($memo[$check])) {
+                    $memo[$check] = $result;
 
-        $runs = $this->runRepository->findLastsForSite($site, $maxDuration);
-
-        /** @var RunCheckResult[] $lastCheckResults */
-        $lastCheckResults = [];
-        foreach ($runs as $run) {
-            /** @var $run Run */
-            foreach ($run->getCheckResults() as $checkResult) {
-                foreach ($lastCheckResults as $lastCheckResult) {
-                    if (
-                        $lastCheckResult->getConfiguredCheck()->isEqualTo($checkResult->getConfiguredCheck()) &&
-                        !$lastCheckResult->isFromSameCheck($checkResult)
-                    ) {
-                        break 2;
-                    }
+                    return $memo;
                 }
 
-                $lastCheckResults[] = $checkResult;
-            }
-        }
+                if (ResultLevel::findWorst([$result->getLevel(), $memo[$check]->getLevel()]) !== $memo[$check]->getLevel()) {
+                    $memo[$check] = $result;
+                }
 
-        return $lastCheckResults;
+                return $memo;
+            },
+            []
+        );
     }
 }

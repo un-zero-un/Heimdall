@@ -17,7 +17,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity()
- * @ORM\Table()
+ * @ORM\Table(
+ *     indexes={
+ *          @ORM\Index(name="configured_check_indirect_identity", columns={"site_id", "check_class", "config"})
+ *     }
+ * )
  */
 class ConfiguredCheck implements HasTimestamp, Equatable
 {
@@ -54,14 +58,6 @@ class ConfiguredCheck implements HasTimestamp, Equatable
      * @ORM\Column(type="json", options={"jsonb": true}, nullable=true)
      */
     private ?array $config = null;
-
-    /**
-     * @Groups({"get_site"})
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string|null
-     */
-    private ?string $lastResult = null;
 
     public function __construct(?Site $site, string $check)
     {
@@ -119,16 +115,6 @@ class ConfiguredCheck implements HasTimestamp, Equatable
     public function setConfig(?array $config): void
     {
         $this->config = $config;
-    }
-
-    public function setLastResult(?string $lastResult): void
-    {
-        $this->lastResult = $lastResult;
-    }
-
-    public function getLastResult(): ?string
-    {
-        return $this->lastResult;
     }
 
     public function isEqualTo(Equatable $equatable): bool

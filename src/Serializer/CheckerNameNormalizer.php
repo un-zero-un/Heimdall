@@ -27,10 +27,13 @@ class CheckerNameNormalizer implements NormalizerInterface, DenormalizerInterfac
     public function normalize($object, $format = null, array $context = [])
     {
         $result = $this->decorated->normalize($object, $format, $context);
-        if ($object instanceof Site && isset($result['configuredChecks'])) {
+        if (isset($result['configuredChecks'])) {
             foreach ($result['configuredChecks'] as $i => $configuredCheck) {
                 $result['configuredChecks'][$i]['check'] = ([$configuredCheck['check'], 'getName'])();
             }
+        }
+        if (isset($result['configuredCheck'])) {
+            $result['configuredCheck']['check'] = ([$result['configuredCheck']['check'], 'getName'])();
         }
 
         return $result;

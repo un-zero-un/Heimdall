@@ -4,9 +4,9 @@ import Loader from '../../common/components/Loader';
 import ResultLevel from '../../common/components/ResultLevel';
 import Title from '../../common/components/Title';
 import ShowSiteRuns from '../../run/containers/ShowSiteRuns';
-import {ConfiguredCheck} from '../../types/configuredCheck';
 import CheckLevelsDatagrid from '../components/CheckLevelsDatagrid';
 import {useSite} from '../hooks';
+import {RunCheckResult} from '../../types/check';
 
 type Props = {
     id: string,
@@ -14,6 +14,11 @@ type Props = {
 
 export default function ({id}: Props) {
     const siteData = useSite(id);
+
+    if ('success' === siteData.status) {
+        console.log(siteData.data.lastResults
+            .map((result: RunCheckResult) => ({ check: result.configuredCheck?.check || '', level: result.type })));
+    }
 
     return (
         <div>
@@ -33,11 +38,11 @@ export default function ({id}: Props) {
                 <>
                     <Title level={3}>Checks</Title>
 
-                    {siteData.data.configuredChecks && (
+                    {siteData.data.lastResults && (
                         <CheckLevelsDatagrid
                             levels={
-                                siteData.data.configuredChecks
-                                    .map((check: ConfiguredCheck) => ({ check: check.check, level: check.lastResult }))
+                                siteData.data.lastResults
+                                    .map((result: RunCheckResult) => ({ check: result.configuredCheck?.check || '', level: result.level }))
                             }
                         />
                     )}
