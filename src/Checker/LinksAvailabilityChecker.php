@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Checker;
 
 use App\Checker\Exception\InvalidUrlException;
+use App\Form\Type\CheckerConfiguration\LinksAvailabilityCheckerConfigType;
 use App\Model\Site;
 use App\ValueObject\ResultLevel;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class LinksAvailabilityChecker implements Checker
+class LinksAvailabilityChecker implements Checker, ConfigurableChecker
 {
     /**
      * @var HttpClientInterface
@@ -24,6 +25,7 @@ class LinksAvailabilityChecker implements Checker
 
     public function check(Site $site, array $config = []): iterable
     {
+        $maxRetries  = $config['max_retries'] ?? 3;
         $parsedUrl   = parse_url($site->getUrl());
         $checkedUrls = [rtrim($site->getUrl(), '/')];
 
@@ -31,10 +33,16 @@ class LinksAvailabilityChecker implements Checker
             throw new InvalidUrlException(sprintf('Missing part in giver url : "%s"', $site->getUrl()));
         }
 
-        return $this->checkUrl($parsedUrl['scheme'] ?? 'http', $parsedUrl['host'], $site->getUrl(), $checkedUrls);
+        return $this->checkUrl(
+            $parsedUrl['scheme'] ?? 'http',
+            $parsedUrl['host'],
+            $site->getUrl(),
+            $checkedUrls,
+            $maxRetries
+        );
     }
 
-    private function checkUrl(string $scheme, string $host, string $url, array &$checkedUrls): iterable
+    private function checkUrl(string $scheme, string $host, string $url, array &$checkedUrls, int $maxRetries): iterable
     {
         $response = null;
         try {
@@ -68,16 +76,22 @@ class LinksAvailabilityChecker implements Checker
                     continue;
                 }
 
-                $url = rtrim($scheme . '://' . $host . $parsed['path'], '/');
-                if (in_array($url, $checkedUrls, true)) {
+                $newUrl = rtrim($scheme . '://' . $host . $parsed['path'], '/');
+                if (in_array($newUrl, $checkedUrls, true)) {
                     continue;
                 }
 
-                $checkedUrls[] = $url;
+                $checkedUrls[] = $newUrl;
 
-                yield from $this->checkUrl($scheme, $host, $url, $checkedUrls);
+                yield from $this->checkUrl($scheme, $host, $newUrl, $checkedUrls, $maxRetries);
             }
         } catch (\Exception $e) {
+            if ($maxRetries > 1) {
+                sleep(1);
+
+                return $this->checkUrl($scheme, $host, $url, $checkedUrls, --$maxRetries);
+            }
+
             yield new CheckResult(
                 ResultLevel::error(),
                 'no_links_to_parse_site_is_down',
@@ -92,6 +106,11 @@ class LinksAvailabilityChecker implements Checker
     public function getDefaultExecutionDelay(): int
     {
         return 60 * 60 * 24;
+    }
+
+    public static function getConfigFormType(): string
+    {
+        return LinksAvailabilityCheckerConfigType::class;
     }
 
     public static function getName(): string

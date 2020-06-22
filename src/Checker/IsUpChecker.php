@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Checker;
 
+use App\Form\Type\CheckerConfiguration\IsUpCheckerConfigType;
 use App\Model\Site;
 use App\ValueObject\ResultLevel;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class IsUpChecker implements Checker
+class IsUpChecker implements Checker, ConfigurableChecker
 {
     /**
      * @var HttpClientInterface
@@ -22,6 +23,7 @@ class IsUpChecker implements Checker
 
     public function check(Site $site, array $config = []): iterable
     {
+        $maxRetries = $config['max_retries'] ?? 3;
         try {
             $response = $this->httpClient->request('GET', $site->getUrl(), ['max_duration' => 10]);
 
@@ -32,13 +34,28 @@ class IsUpChecker implements Checker
                         'site_status_is_errored',
                         [
                             '%status_code%' => $response->getStatusCode(),
-                            '%url%'         => $site->getUrl()
+                            '%url%'         => $site->getUrl(),
                         ]
-                    )
+                    ),
                 ];
             }
         } catch (\Exception $e) {
-            return [new CheckResult(ResultLevel::error(), 'site_is_down')];
+            if ($maxRetries > 1) {
+                sleep(1);
+
+                return $this->check($site, [...$config, 'max_retries' => --$maxRetries]);
+            }
+
+            return [
+                new CheckResult(
+                    ResultLevel::error(),
+                    'site_is_down',
+                    [
+                        '%url%'               => $site->getUrl(),
+                        '%exception_message%' => $e->getMessage(),
+                    ]
+                ),
+            ];
         }
 
         return [new CheckResult(ResultLevel::success(), 'site_is_up')];
@@ -47,6 +64,11 @@ class IsUpChecker implements Checker
     public function getDefaultExecutionDelay(): int
     {
         return 60;
+    }
+
+    public static function getConfigFormType(): string
+    {
+        return IsUpCheckerConfigType::class;
     }
 
     public static function getName(): string

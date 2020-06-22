@@ -1,7 +1,7 @@
 check_result:
     type:
         site_is_up: Site is up
-        site_is_down: 'Site is down'
+        site_is_down: 'Site is down (URL : %url%, exception message : %exception_message%)'
         site_status_is_errored: 'Site status is errored (status code : %status_code%)'
 
         selector_not_found: Selector "%selector%" was not found in page "%page%"
