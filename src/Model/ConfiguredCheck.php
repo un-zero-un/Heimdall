@@ -102,7 +102,7 @@ class ConfiguredCheck implements HasTimestamp, Equatable
         return $this->executionDelay;
     }
 
-    public function setExecutionDelay(?int $executionDelay): void
+    public function setExecutionDelay(int $executionDelay): void
     {
         $this->executionDelay = $executionDelay;
     }

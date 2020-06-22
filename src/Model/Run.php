@@ -56,7 +56,7 @@ class Run implements HasTimestamp, Equatable
      * @ORM\ManyToOne(targetEntity=Site::class)
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private ?Site $site = null;
+    private Site $site;
 
     /**
      * @ORM\Column(type="boolean")
@@ -81,6 +81,7 @@ class Run implements HasTimestamp, Equatable
      * @ORM\OneToMany(targetEntity=RunCheckResult::class, mappedBy="run", cascade={"persist"})
      *
      * @var Collection<RunCheckResult>
+     * @psalm-var Collection<int, RunCheckResult>
      */
     private Collection $checkResults;
 
@@ -105,6 +106,7 @@ class Run implements HasTimestamp, Equatable
 
     /**
      * @return Collection<RunCheckResult>
+     * @psalm-return Collection<int, RunCheckResult>
      */
     public function getCheckResults(): Collection
     {

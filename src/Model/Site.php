@@ -72,6 +72,7 @@ class Site implements HasTimestamp
      * @ORM\OneToMany(targetEntity=ConfiguredCheck::class, mappedBy="site", cascade={"remove"})
      *
      * @var Collection<ConfiguredCheck>
+     * @psalm-var Collection<int, ConfiguredCheck>
      */
     private /*Collection */$configuredChecks;
 
@@ -118,6 +119,7 @@ class Site implements HasTimestamp
 
     /**
      * @return Collection<ConfiguredCheck>
+     * @psalm-return Collection<int, ConfiguredCheck>
      */
     public function getConfiguredChecks(): Collection
     {

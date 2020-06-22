@@ -46,7 +46,7 @@ class RunResultsNotifier
     public function notify(array $runs): void
     {
         $worstLevel = ResultLevel::findWorst(array_map(
-            fn(Run $run) => ResultLevel::fromString($run->getSiteResult()),
+            fn(Run $run) => ResultLevel::fromString($run->getSiteResult() ?: ResultLevel::UNKNOWN),
             $runs
         ))->toString();
 

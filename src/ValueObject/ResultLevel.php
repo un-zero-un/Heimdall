@@ -48,11 +48,11 @@ class ResultLevel
     /**
      * @param self[] $levels
      *
-     * @return static
+     * @return self
      */
     public static function findWorst(array $levels): self
     {
-        $maxLevel     = self::LEVEL_WEIGHTS[array_key_last(self::LEVEL_WEIGHTS)];
+        $maxLevel     = array_key_last(self::LEVEL_WEIGHTS);
         $currentLevel = self::fromString(array_key_first(self::LEVEL_WEIGHTS));
         foreach ($levels as $level) {
             if ($level->level === $maxLevel) {

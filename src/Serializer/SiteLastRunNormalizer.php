@@ -14,6 +14,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SiteLastRunNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
+    /**
+     * @var DenormalizerInterface&NormalizerInterface
+     */
     private NormalizerInterface $decorated;
 
     private RunRepository $runRepository;
@@ -46,6 +49,10 @@ class SiteLastRunNormalizer implements NormalizerInterface, DenormalizerInterfac
         }
 
         $normalized = $this->decorated->normalize($object, $format, $context);
+
+        if (!is_array($normalized)) {
+            return $normalized;
+        }
 
         try {
             $normalized['lastRun'] = $this->decorated->normalize(

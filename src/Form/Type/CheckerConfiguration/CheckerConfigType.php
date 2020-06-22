@@ -16,17 +16,30 @@ class CheckerConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) {
-                $configuredCheck = $event->getForm()->getParent()->getData();
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                static function (FormEvent $event) {
+                    $parentForm      = $event->getForm()->getParent();
 
-                if (!is_a($configuredCheck->getCheck(), ConfigurableChecker::class, true)) {
-                    return;
+                    if (null === $parentForm) {
+                        throw new FormContextException(
+                            sprintf(
+                                'The %s FormType cannot be used as a root FormType',
+                                self::class
+                            )
+                        );
+                    }
+
+                    $configuredCheck = $parentForm->getData();
+                    if (!is_a($configuredCheck->getCheck(), ConfigurableChecker::class, true)) {
+                        return;
+                    }
+
+                    $parentForm->add(
+                        'config',
+                        call_user_func([$configuredCheck->getCheck(), 'getConfigFormType']),
+                    );
                 }
-
-                $event->getForm()->getParent()->add(
-                    'config',
-                    call_user_func([$configuredCheck->getCheck(), 'getConfigFormType']),
-                );
-            });
+            );
     }
 }

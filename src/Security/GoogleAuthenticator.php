@@ -54,15 +54,14 @@ class GoogleAuthenticator extends SocialAuthenticator
         $oauthGoogleAuthorizedDomains,
         $authorizedEmails,
         $adminEmails
-    )
-    {
-        $this->clientRegistry               = $clientRegistry;
-        $this->urlGenerator                 = $urlGenerator;
-        $this->successHandler               = $successHandler;
-        $this->userRepository               = $userRepository;
+    ) {
+        $this->clientRegistry = $clientRegistry;
+        $this->urlGenerator = $urlGenerator;
+        $this->successHandler = $successHandler;
+        $this->userRepository = $userRepository;
         $this->oauthGoogleAuthorizedDomains = $oauthGoogleAuthorizedDomains;
-        $this->authorizedEmails             = $authorizedEmails;
-        $this->adminEmails                  = $adminEmails;
+        $this->authorizedEmails = $authorizedEmails;
+        $this->adminEmails = $adminEmails;
     }
 
     public function supports(Request $request)
@@ -90,10 +89,17 @@ class GoogleAuthenticator extends SocialAuthenticator
             ->getClient('google')
             ->fetchUserFromToken($credentials);
 
+        $email = $googleUser->getEmail();
+        $name  = $googleUser->getName();
+
+        if (!($email && $name)) {
+            throw new AccessDeniedHttpException('Google didn\'t provide us your email and / or name.');
+        }
+
         if (
             $this->oauthGoogleAuthorizedDomains &&
             !in_array(
-                explode('@', $googleUser->getEmail())[1],
+                explode('@', $email)[1],
                 $this->oauthGoogleAuthorizedDomains,
                 true,
             )
@@ -102,9 +108,9 @@ class GoogleAuthenticator extends SocialAuthenticator
         }
 
         try {
-            $user = $this->userRepository->findOneByEmail($googleUser->getEmail());
+            $user = $this->userRepository->findOneByEmail($email);
         } catch (NoResultException $e) {
-            $user = new User($googleUser->getEmail(), $googleUser->getName());
+            $user = new User($email, $name);
             $this->userRepository->create($user);
         }
 
@@ -139,7 +145,9 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
-        if ($request->headers->has('X-Requested-With') && 'XMLHttpRequest' === $request->headers->get('X-Requested-With')) {
+        if ($request->headers->has('X-Requested-With') && 'XMLHttpRequest' === $request->headers->get(
+                'X-Requested-With'
+            )) {
             return $this->successHandler->onAuthenticationSuccess($request, $token);
         }
 

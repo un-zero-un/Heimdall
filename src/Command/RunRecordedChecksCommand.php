@@ -51,7 +51,7 @@ class RunRecordedChecksCommand extends Command
             $io->comment(
                 sprintf(
                     '%s, %s : %s',
-                    $runCheckResult->getRun()->getSite(),
+                    (string) $runCheckResult->getRun()->getSite(),
                     $runCheckResult->getConfiguredCheck()->getCheck(),
                     $runCheckResult->getLevel()
                 )

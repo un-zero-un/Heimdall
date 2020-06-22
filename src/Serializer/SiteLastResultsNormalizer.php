@@ -7,7 +7,6 @@ namespace App\Serializer;
 use App\Model\RunCheckResult;
 use App\Model\Site;
 use App\Repository\RunCheckResultRepository;
-use App\Repository\RunRepository;
 use Doctrine\ORM\UnexpectedResultException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -16,6 +15,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SiteLastResultsNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
+    /**
+     * @var DenormalizerInterface&NormalizerInterface
+     */
     private NormalizerInterface $decorated;
 
     private RunCheckResultRepository $runCheckResultRepository;
@@ -28,7 +30,7 @@ class SiteLastResultsNormalizer implements NormalizerInterface, DenormalizerInte
             );
         }
 
-        $this->decorated     = $decorated;
+        $this->decorated                = $decorated;
         $this->runCheckResultRepository = $runCheckResultRepository;
     }
 
@@ -48,10 +50,13 @@ class SiteLastResultsNormalizer implements NormalizerInterface, DenormalizerInte
         }
 
         $normalized = $this->decorated->normalize($object, $format, $context);
+        if (!is_array($normalized)) {
+            return $normalized;
+        }
 
         try {
             $normalized['lastResults'] = array_map(
-                fn (RunCheckResult $result) => $this->decorated->normalize($result, $format, $context),
+                fn(RunCheckResult $result) => $this->decorated->normalize($result, $format, $context),
                 $this->runCheckResultRepository->findLastOfEachCheckClassForSite($object),
             );
         } catch (UnexpectedResultException $e) {

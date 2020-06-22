@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Checker;
 
+use App\Checker\Exception\InvalidUrlException;
 use App\Model\Site;
 use App\ValueObject\ResultLevel;
 use Symfony\Component\DomCrawler\Crawler;
@@ -25,6 +26,10 @@ class LinksAvailabilityChecker implements Checker
     {
         $parsedUrl   = parse_url($site->getUrl());
         $checkedUrls = [rtrim($site->getUrl(), '/')];
+
+        if (!isset($parsedUrl['scheme'], $parsedUrl['host'])) {
+            throw new InvalidUrlException(sprintf('Missing part in giver url : "%s"', $site->getUrl()));
+        }
 
         return $this->checkUrl($parsedUrl['scheme'] ?? 'http', $parsedUrl['host'], $site->getUrl(), $checkedUrls);
     }
@@ -48,6 +53,7 @@ class LinksAvailabilityChecker implements Checker
 
             $crawler = new Crawler($response->getContent());
             foreach ($crawler->filter('a[href]') as $a) {
+                /** @var \DOMElement $a */
                 $parsed = parse_url($a->getAttribute('href'));
                 if (!isset($parsed['path'])) {
                     continue;
@@ -67,6 +73,7 @@ class LinksAvailabilityChecker implements Checker
                 }
 
                 $checkedUrls[] = $url;
+
                 yield from $this->checkUrl($scheme, $host, $url, $checkedUrls);
             }
         } catch (\Exception $e) {
@@ -75,7 +82,7 @@ class LinksAvailabilityChecker implements Checker
                 'no_links_to_parse_site_is_down',
                 [
                     '%url%'         => $url,
-                    '%status_code%' => $response ? $response->getStatusCode() : null,
+                    '%status_code%' => isset($response) ? $response->getStatusCode() : null,
                 ]
             );
         }

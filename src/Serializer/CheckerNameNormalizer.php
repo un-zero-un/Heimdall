@@ -12,10 +12,19 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class CheckerNameNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
+    /**
+     * @var DenormalizerInterface&NormalizerInterface
+     */
     private NormalizerInterface $decorated;
 
     public function __construct(NormalizerInterface $decorated)
     {
+        if (!$decorated instanceof DenormalizerInterface) {
+            throw new \InvalidArgumentException(
+                sprintf('The decorated normalizer must implement the %s.', DenormalizerInterface::class)
+            );
+        }
+
         $this->decorated = $decorated;
     }
 
@@ -26,22 +35,26 @@ class CheckerNameNormalizer implements NormalizerInterface, DenormalizerInterfac
 
     public function normalize($object, $format = null, array $context = [])
     {
-        $result = $this->decorated->normalize($object, $format, $context);
-        if (isset($result['configuredChecks'])) {
-            foreach ($result['configuredChecks'] as $i => $configuredCheck) {
-                $result['configuredChecks'][$i]['check'] = ([$configuredCheck['check'], 'getName'])();
-            }
-        }
-        if (isset($result['configuredCheck'])) {
-            $result['configuredCheck']['check'] = ([$result['configuredCheck']['check'], 'getName'])();
+        $normalized = $this->decorated->normalize($object, $format, $context);
+        if (!is_array($normalized)) {
+            return $normalized;
         }
 
-        return $result;
+        if (isset($normalized['configuredChecks'])) {
+            foreach ($normalized['configuredChecks'] as $i => $configuredCheck) {
+                $normalized['configuredChecks'][$i]['check'] = ([$configuredCheck['check'], 'getName'])();
+            }
+        }
+        if (isset($normalized['configuredCheck'])) {
+            $normalized['configuredCheck']['check'] = ([$normalized['configuredCheck']['check'], 'getName'])();
+        }
+
+        return $normalized;
     }
 
     public function supportsDenormalization($data, $type, $format = null)
     {
-        $this->decorated->supportsDenormalization($data, $type, $format);
+        return $this->decorated->supportsDenormalization($data, $type, $format);
     }
 
     public function supportsNormalization($data, $format = null)
@@ -51,6 +64,8 @@ class CheckerNameNormalizer implements NormalizerInterface, DenormalizerInterfac
 
     public function setSerializer(SerializerInterface $serializer)
     {
-        $this->decorated->setSerializer($serializer);
+        if ($this->decorated instanceof SerializerAwareInterface) {
+            $this->decorated->setSerializer($serializer);
+        }
     }
 }

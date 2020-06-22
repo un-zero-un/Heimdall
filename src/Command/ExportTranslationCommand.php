@@ -42,14 +42,15 @@ class ExportTranslationCommand extends Command
             return 1;
         }
 
-
-        $json = 'export default ' . \json_encode(
-            $this->translator->getCatalogue($input->getArgument('locale'))->all('messages'),
+        /** @var string $locale */
+        $locale = $input->getArgument('locale');
+        $json   = 'export default ' . \json_encode(
+            $this->translator->getCatalogue($locale)->all('messages'),
             JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR
         );
 
-        if ($output = $input->getOption('output')) {
-            file_put_contents($output, $json);
+        if (($outputFile = $input->getOption('output')) && is_string($outputFile)) {
+            file_put_contents($outputFile, $json);
 
             return 0;
         }
