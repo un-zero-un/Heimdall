@@ -13,13 +13,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CheckerConfigType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
                 static function (FormEvent $event) {
-                    $parentForm      = $event->getForm()->getParent();
+                    $parentForm = $event->getForm()->getParent();
 
                     if (null === $parentForm) {
                         throw new FormContextException(

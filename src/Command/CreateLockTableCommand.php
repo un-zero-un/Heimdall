@@ -27,7 +27,7 @@ class CreateLockTableCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('heimdall:lock:create-table')

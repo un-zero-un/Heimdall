@@ -36,6 +36,7 @@ class LinksAvailabilityChecker implements Checker
 
     private function checkUrl(string $scheme, string $host, string $url, array &$checkedUrls): iterable
     {
+        $response = null;
         try {
             $response = $this->httpClient->request('GET', $url);
 
@@ -82,7 +83,7 @@ class LinksAvailabilityChecker implements Checker
                 'no_links_to_parse_site_is_down',
                 [
                     '%url%'         => $url,
-                    '%status_code%' => isset($response) ? $response->getStatusCode() : null,
+                    '%status_code%' => null !== $response ? $response->getStatusCode() : null,
                 ]
             );
         }

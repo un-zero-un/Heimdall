@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Checker;
 
 use App\Checker\Exception\UnknownCheckerException;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\NoopWordInflector;
 
 class CheckerCollection
 {
@@ -47,7 +48,7 @@ class CheckerCollection
         } catch (UnknownCheckerException $e) {
         }
 
-        return $this->get(__NAMESPACE__ . '\\' . Inflector::classify($name) . 'Checker');
+        return $this->get(__NAMESPACE__ . '\\' . (new Inflector(new NoopWordInflector, new NoopWordInflector))->classify($name) . 'Checker');
     }
 
     /**

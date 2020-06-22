@@ -36,7 +36,7 @@ trait HasTimestampImpl
         return $this->updatedAt;
     }
 
-    public function initialize(): void
+    final public function initialize(): void
     {
         $this->createdAt = new \DateTimeImmutable;
         $this->updatedAt = new \DateTimeImmutable;

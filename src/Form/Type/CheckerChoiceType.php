@@ -18,7 +18,7 @@ class CheckerChoiceType extends AbstractType
         $this->checkerCollection = $checkerCollection;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(
@@ -26,7 +26,7 @@ class CheckerChoiceType extends AbstractType
                     'placeholder'  => '',
                     'choices'      => $this->checkerCollection->all(),
                     'choice_label' => 'name',
-                    'choice_value' => static function ($checker) {
+                    'choice_value' => static function ($checker): string {
                         if (is_string($checker)) {
                             return $checker;
                         }

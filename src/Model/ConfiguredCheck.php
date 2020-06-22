@@ -88,6 +88,9 @@ class ConfiguredCheck implements HasTimestamp, Equatable
         return $this->check;
     }
 
+    /**
+     * @param Checker|string $check
+     */
     public function setCheck($check): void
     {
         if ($check instanceof Checker) {

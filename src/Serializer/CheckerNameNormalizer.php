@@ -28,12 +28,12 @@ class CheckerNameNormalizer implements NormalizerInterface, DenormalizerInterfac
         $this->decorated = $decorated;
     }
 
-    public function denormalize($data, $type, $format = null, array $context = [])
+    public function denormalize($data, string $type, string $format = null, array $context = [])
     {
         return $this->decorated->denormalize($data, $type, $format, $context);
     }
 
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         $normalized = $this->decorated->normalize($object, $format, $context);
         if (!is_array($normalized)) {
@@ -52,17 +52,17 @@ class CheckerNameNormalizer implements NormalizerInterface, DenormalizerInterfac
         return $normalized;
     }
 
-    public function supportsDenormalization($data, $type, $format = null)
+    public function supportsDenormalization($data, string $type, string $format = null)
     {
         return $this->decorated->supportsDenormalization($data, $type, $format);
     }
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $this->decorated->supportsNormalization($data, $format);
     }
 
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(SerializerInterface $serializer): void
     {
         if ($this->decorated instanceof SerializerAwareInterface) {
             $this->decorated->setSerializer($serializer);

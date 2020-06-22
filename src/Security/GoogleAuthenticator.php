@@ -51,9 +51,9 @@ class GoogleAuthenticator extends SocialAuthenticator
         UrlGeneratorInterface $urlGenerator,
         AuthenticationSuccessHandler $successHandler,
         UserRepository $userRepository,
-        $oauthGoogleAuthorizedDomains,
-        $authorizedEmails,
-        $adminEmails
+        ?array $oauthGoogleAuthorizedDomains,
+        array $authorizedEmails,
+        array $adminEmails
     ) {
         $this->clientRegistry = $clientRegistry;
         $this->urlGenerator = $urlGenerator;
