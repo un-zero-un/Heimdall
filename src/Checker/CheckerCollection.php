@@ -17,7 +17,7 @@ class CheckerCollection
 
     public function __construct(iterable $checkers)
     {
-        $this->checkers = $checkers;
+        $this->checkers = is_array($checkers) ? $checkers : iterator_to_array($checkers);
     }
 
     public function get(string $name): Checker
