@@ -7,6 +7,7 @@ import Loader from '../../common/components/Loader';
 import RoutedButton from '../../common/components/RoutedButton';
 import {RunCollection} from '../../types/run';
 import RunStatus from './RunStatus';
+import DateTime from '../../common/components/DateTime';
 
 type Props = {
     runs: RunCollection | null,
@@ -26,7 +27,13 @@ export default function RunDatagrid({runs, error = false, loading = false}: Prop
                         property: 'createdAt',
                         primary:  true,
                         header:   'Date',
-                        render:   run => <DateDiff date={run.createdAt} />,
+                        render:   run => (
+                            <>
+                                <DateDiff date={run.createdAt} />
+                                {' '}
+                                (<DateTime date={run.createdAt} format="YYYY-MM-DD HH:mm" />)
+                            </>
+                        ),
                     },
                     {
                         property: 'lowerResultLevel',

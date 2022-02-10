@@ -75,6 +75,8 @@ class CheckRunner
             }
         }
 
+        $this->runRepository->update($run);
+
         $run->finish($this->lastResultsCompiler->getCurrentLowerResultLevel($site));
         $this->runRepository->update($run);
     }
