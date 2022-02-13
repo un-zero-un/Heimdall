@@ -27,6 +27,12 @@ class RunRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function remove(Run $run): void
+    {
+        $this->getEntityManager()->remove($run);
+        $this->getEntityManager()->flush();
+    }
+
     public function findLastForSite(Site $site): Run
     {
         return $this->createQueryBuilder('run')

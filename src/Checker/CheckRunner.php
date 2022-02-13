@@ -84,6 +84,12 @@ class CheckRunner
             }
         }
 
+        if (0 === $run->getCheckResults()->count()) {
+            $this->runRepository->remove($run);
+
+            return;
+        }
+
         $this->runRepository->update($run);
 
         $run->finish($this->lastResultsCompiler->getCurrentLowerResultLevel($site));
@@ -107,7 +113,7 @@ class CheckRunner
         $this->notifier->notify(
             array_unique(
                 array_map(
-                    fn(RunCheckResult $result) => $result->getRun(),
+                    static fn (RunCheckResult $result) => $result->getRun(),
                     $results
                 ),
                 SORT_REGULAR

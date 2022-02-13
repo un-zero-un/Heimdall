@@ -100,7 +100,7 @@ EXPOSE 80
 FROM php as cron
 
 RUN crontab -l | { cat; \
-    echo "*/1 * * * * /app/bin/console heimdall:run-recorded-checks"; \
+    echo "*/2 * * * * /app/bin/console heimdall:run-recorded-checks"; \
 } | crontab -
 
 
