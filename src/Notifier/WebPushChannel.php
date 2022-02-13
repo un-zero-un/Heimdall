@@ -9,7 +9,7 @@ use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Symfony\Component\Notifier\Channel\ChannelInterface;
 use Symfony\Component\Notifier\Notification\Notification;
-use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Component\Notifier\Recipient\RecipientInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class WebPushChannel implements ChannelInterface
@@ -31,7 +31,7 @@ class WebPushChannel implements ChannelInterface
         $this->serializer             = $serializer;
     }
 
-    public function notify(Notification $notification, Recipient $recipient, string $transportName = null): void
+    public function notify(Notification $notification, RecipientInterface $recipient, string $transportName = null): void
     {
         foreach ($this->subscriptionRepository->findAll() as $subscription) {
             $pushSubscription = Subscription::create([
@@ -50,7 +50,7 @@ class WebPushChannel implements ChannelInterface
         }
     }
 
-    public function supports(Notification $notification, Recipient $recipient): bool
+    public function supports(Notification $notification, RecipientInterface $recipient): bool
     {
         return true;
     }

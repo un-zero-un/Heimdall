@@ -9,6 +9,7 @@ use App\Model\Run;
 use App\Model\RunCheckResult;
 use App\Model\Site;
 use App\Notifier\RunResultsNotifier;
+use App\Repository\RunCheckResultRepository;
 use App\Repository\RunRepository;
 use App\Repository\SiteRepository;
 use App\ResultCompiler\SiteLastResultsCompiler;
@@ -27,18 +28,23 @@ class CheckRunner
 
     private SiteLastResultsCompiler $lastResultsCompiler;
 
+    private RunCheckResultRepository $runCheckResultRepository;
+
     public function __construct(
-        RunRepository $runRepository,
-        SiteRepository $siteRepository,
-        CheckerCollection $checkerCollection,
-        RunResultsNotifier $notifier,
-        SiteLastResultsCompiler $lastResultsCompiler
-    ) {
-        $this->runRepository       = $runRepository;
-        $this->siteRepository      = $siteRepository;
-        $this->checkerCollection   = $checkerCollection;
-        $this->notifier            = $notifier;
-        $this->lastResultsCompiler = $lastResultsCompiler;
+        RunRepository            $runRepository,
+        RunCheckResultRepository $runCheckResultRepository,
+        SiteRepository           $siteRepository,
+        CheckerCollection        $checkerCollection,
+        RunResultsNotifier       $notifier,
+        SiteLastResultsCompiler  $lastResultsCompiler
+    )
+    {
+        $this->runRepository            = $runRepository;
+        $this->siteRepository           = $siteRepository;
+        $this->checkerCollection        = $checkerCollection;
+        $this->notifier                 = $notifier;
+        $this->lastResultsCompiler      = $lastResultsCompiler;
+        $this->runCheckResultRepository = $runCheckResultRepository;
     }
 
     /**
@@ -46,22 +52,25 @@ class CheckRunner
      */
     public function runForSite(Site $site): \Generator
     {
-        try {
-            $lastRun = $this->runRepository->findLastForSite($site);
-        } catch (UnexpectedResultException $e) {
-            $lastRun = null;
-        }
         $run = Run::publish($site);
 
         $run->begin();
         $this->runRepository->save($run);
 
+        /** @var RunCheckResult[] $lastRunCheckResults */
+        $lastRunCheckResults = $this->runCheckResultRepository->findLastOfEachCheckClassForSite($site);
+
         foreach ($site->getConfiguredChecks() as $configuredCheck) {
+
             /** @var ConfiguredCheck $configuredCheck */
             $checker        = $this->checkerCollection->get($configuredCheck->getCheck());
             $executionDelay = $configuredCheck->getExecutionDelay() ?: $checker->getDefaultExecutionDelay();
-            if ($lastRun && (time() - $lastRun->getCreatedAt()->getTimestamp() < $executionDelay)) {
-                continue;
+            foreach ($lastRunCheckResults as $runCheckResult) {
+                if (
+                    $runCheckResult->getConfiguredCheck()->isEqualTo($configuredCheck) &&
+                    (time() - $runCheckResult->getCreatedAt()->getTimestamp()) < $executionDelay) {
+                    continue 2;
+                }
             }
 
             $results = $checker->check($site, $configuredCheck->getConfig() ?: []);

@@ -29,7 +29,7 @@ class RunCheckResultRepository extends ServiceEntityRepository
         return $this->getEntityManager()
             ->createNativeQuery(
                 <<<SQL
-                    SELECT *
+                    SELECT run_check_result.*
                     FROM ${tableName} run_check_result
                     INNER JOIN ${configuredCheckTableName} configured_check ON configured_check.id = run_check_result.configured_check_id
                     WHERE 
