@@ -20,8 +20,8 @@ services:
         networks: [ heimdall ]
         ports:    ['8025:8025']
 
-#    cron:
-#        env_file: [ .env, .env.local ]
-#        volumes:  [ '.:/app' ]
-#        depends_on:
-#            - smtp
+    cron:
+        env_file: [ .env, .env.local ]
+        volumes:  [ '.:/app' ]
+        depends_on:
+            - smtp
