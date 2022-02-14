@@ -36,13 +36,13 @@ class RunRecordedChecksCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io   = new SymfonyStyle($input, $output);
-        /*$lock = $this->lockFactory->createLock(self::NAME, 600);
+        $lock = $this->lockFactory->createLock(self::NAME, 600);
 
         if (!$lock->acquire()) {
             $io->error('A check is already running.');
 
             return 0;
-        }*/
+        }
 
         $io->note('Running all checks');
 
@@ -58,7 +58,7 @@ class RunRecordedChecksCommand extends Command
             );
         }
 
-        //$lock->release();
+        $lock->release();
 
         return 0;
     }
