@@ -1,19 +1,22 @@
-ARG PHP_VERSION=7.4
+ARG PHP_VERSION=8.1
 ARG ALPINE_VERSION=3.15
 ARG NGINX_VERSION=1.21
 ARG NODE_VERSION=16
 
-FROM node:${NODE_VERSION}-alpine AS node
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS node
 
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS php
 
+ARG APCU_VERSION=5.1.21
+ARG EXTERNAL_USER_ID=1000
+
 RUN set -eux; \
-    apk add --no-cache postgresql-client libpq acl oniguruma libstdc++ libxslt libgcrypt gmp; \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main libcurl curl; \
-    apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} postgresql-dev oniguruma-dev libxslt-dev libgcrypt-dev gmp-dev; \
-    apk add --no-cache --virtual .edge-build-deps --repository http://dl-cdn.alpinelinux.org/alpine/edge/main curl-dev; \
-    docker-php-ext-install pdo_pgsql pcntl mbstring opcache xsl gmp curl; \
-    apk del .build-deps .edge-build-deps
+    apk add --no-cache fcgi postgresql-client libpq acl oniguruma libstdc++ libxslt libgcrypt gmp libcurl curl icu; \
+    apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} postgresql-dev oniguruma-dev libxslt-dev libgcrypt-dev gmp-dev curl-dev icu-dev; \
+    pecl install apcu-${APCU_VERSION}; \
+    docker-php-ext-enable apcu; \
+    docker-php-ext-install pdo_pgsql intl pcntl mbstring opcache xsl gmp curl; \
+    apk del .build-deps
 
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -29,9 +32,34 @@ COPY --from=node /opt/yarn* /opt/yarn
 RUN ln -vs /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 RUN ln -vs /opt/yarn/bin/yarn /usr/local/bin/yarn
 
-ARG APP_ENV=prod
+
+
+COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
+RUN chmod +x /usr/local/bin/docker-healthcheck
+
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
+
+RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+COPY docker/php/conf.d/symfony.prod.ini $PHP_INI_DIR/conf.d/symfony.ini
+
+COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+
+COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+
 
 WORKDIR /app
+
+RUN set -eux; \
+    sed -i -r s/"(www-data:x:)([[:digit:]]+):([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:${EXTERNAL_USER_ID}:/g /etc/passwd; \
+    sed -i -r s/"(www-data:x:)([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:/g /etc/group; \
+    chown -R www-data:www-data /app /home/www-data /usr/local/etc/php
+
+USER www-data
+ARG APP_ENV=prod
+ARG APP_DEBUG=false
+
+
 
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
@@ -43,12 +71,12 @@ COPY package.json yarn.lock ./
 
 RUN yarn --pure-lockfile
 
-COPY bin bin/
-COPY config config/
-COPY public public/
-COPY src src/
-COPY templates templates/
-COPY translations translations/
+COPY --chown=www-data:www-data bin bin/
+COPY --chown=www-data:www-data config config/
+COPY --chown=www-data:www-data public public/
+COPY --chown=www-data:www-data src src/
+COPY --chown=www-data:www-data templates templates/
+COPY --chown=www-data:www-data translations translations/
 
 RUN set -eux; \
     mkdir -p var/cache var/log; \
@@ -58,19 +86,15 @@ RUN set -eux; \
     chmod +x bin/console; \
     sync
 
-COPY assets assets/
-COPY webpack.config.js ./
-COPY tsconfig.json ./
+COPY --chown=www-data:www-data assets assets/
+COPY --chown=www-data:www-data webpack.config.js ./
+COPY --chown=www-data:www-data tsconfig.json ./
 
 RUN set -eux; \
     mkdir -p public; \
     yarn build
 
-VOLUME /app/var/log
-VOLUME /app/var/cache
 
-COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-RUN chmod +x /usr/local/bin/docker-entrypoint
 
 EXPOSE 9000
 
@@ -93,17 +117,19 @@ RUN set -eux; \
     ./mkcert -cert-file /app/docker/nginx/localhost.pem -key-file /app/docker/nginx/localhost-key.pem localhost 127.0.0.1 ::1; \
     rm ./mkcert
 
-
 EXPOSE 80
 
 
 FROM php as cron
 
+USER root
+
 RUN crontab -l | { cat; \
     echo "*/2 * * * * /app/bin/console heimdall:run-recorded-checks"; \
     echo "0 23 * * */0 /app/bin/console heimdall:clean-runs"; \
-} | crontab -
+} | crontab -u www-data -
 
+HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD php -v || exit 1
 
 WORKDIR /app
 

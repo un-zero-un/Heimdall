@@ -1,45 +1,45 @@
 #!/bin/sh
 set -e
 
-CONNECT_STRING=$(eval echo ${DATABASE_URL} | awk -F '//' '{print $2}' -)
-
-CREDENTIALS=$(echo ${CONNECT_STRING} | awk -F '@' '{print $1}' -)
-HOST_INFO=$(echo ${CONNECT_STRING} | awk -F '@' '{print $2}' -)
-
-LOGIN=$(echo ${CREDENTIALS} | awk -F ':' '{print $1}' -)
-PASSWORD=$(echo ${CREDENTIALS} | awk -F ':' '{print $2}' -)
-
-HOST_AND_PORT=$(echo ${HOST_INFO} | awk -F '/' '{print $1}' -)
-DATABASE=$(echo ${HOST_INFO} | awk -F '/' '{print $2}' -)
-
-HOST=$(echo ${HOST_AND_PORT} | awk -F ':' '{print $1}' -)
-PORT=$(echo ${HOST_AND_PORT} | awk -F ':' '{print $2}' -)
-
-
-
-
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
     set -- php-fpm "$@"
 fi
 
 if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
-    mkdir -p var/cache var/log
-    setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
-    setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
-
+    PHP_INI_RECOMMENDED="$PHP_INI_DIR/php.ini-production"
     if [ "$APP_ENV" != 'prod' ]; then
-        ln -sf ${PHP_INI_DIR}/php.ini-development ${PHP_INI_DIR}/php.ini
-        #composer install --prefer-dist --no-progress --no-suggest --no-interaction
-    else
-        ln -sf ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
-        echo "opcache.validate_timestamps=0" >> ${PHP_INI_DIR}/php.ini
+        PHP_INI_RECOMMENDED="$PHP_INI_DIR/php.ini-development"
     fi
+    ln -sf "$PHP_INI_RECOMMENDED" "$PHP_INI_DIR/php.ini"
 
-    >&2 echo "Waiting for Postgres to be ready..."
-    until pg_isready --timeout=0 --dbname="${DATABASE}" --username="${LOGIN}" --host="${HOST}" --port="${PORT}"; do
-        sleep 1
-    done
+    if grep -q ^DATABASE_URL= .env; then
+        if [ "$CREATION" = "1" ]; then
+            echo "To finish the installation please press Ctrl+C to stop Docker Compose and run: docker-compose up --build"
+            sleep infinity
+        fi
+
+        echo "Waiting for db to be ready..."
+        ATTEMPTS_LEFT_TO_REACH_DATABASE=60
+        until [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ] || DATABASE_ERROR=$(bin/console dbal:run-sql "SELECT 1" 2>&1); do
+            if [ $? -eq 255 ]; then
+                # If the Doctrine command exits with 255, an unrecoverable error occurred
+                ATTEMPTS_LEFT_TO_REACH_DATABASE=0
+                break
+            fi
+            sleep 1
+            ATTEMPTS_LEFT_TO_REACH_DATABASE=$((ATTEMPTS_LEFT_TO_REACH_DATABASE - 1))
+            echo "Still waiting for db to be ready... Or maybe the db is not reachable. $ATTEMPTS_LEFT_TO_REACH_DATABASE attempts left"
+        done
+
+        if [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ]; then
+            echo "The database is not up or not reachable:"
+            echo "$DATABASE_ERROR"
+            exit 1
+        else
+            echo "The db is now ready and reachable"
+        fi
+    fi
 fi
 
 exec docker-php-entrypoint "$@"

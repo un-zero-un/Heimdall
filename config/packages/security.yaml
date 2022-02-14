@@ -15,6 +15,7 @@ security:
             pattern:  ^(/api/connect/google|/admin)
             stateless: false
             anonymous: true
+            logout:    ~
             guard:
                 provider: users
                 authenticators:
