@@ -41,7 +41,7 @@ class IsUpChecker implements Checker, ConfigurableChecker
             }
         } catch (\Exception $e) {
             if ($maxRetries > 1) {
-                sleep(1);
+                sleep(5);
 
                 return $this->check($site, array_merge($config, ['max_retries' => --$maxRetries]));
             }
