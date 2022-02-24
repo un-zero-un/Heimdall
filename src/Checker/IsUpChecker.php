@@ -7,23 +7,21 @@ namespace App\Checker;
 use App\Form\Type\CheckerConfiguration\IsUpCheckerConfigType;
 use App\Model\Site;
 use App\ValueObject\ResultLevel;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class IsUpChecker implements Checker, ConfigurableChecker
 {
-    /**
-     * @var HttpClientInterface
-     */
-    private $httpClient;
-
-    public function __construct(HttpClientInterface $httpClient)
+    public function __construct(
+        private HttpClientInterface $httpClient,
+        private LoggerInterface $logger,
+    )
     {
-        $this->httpClient = $httpClient;
     }
 
     public function check(Site $site, array $config = []): iterable
     {
-        $maxRetries = $config['max_retries'] ?? 3;
+        $maxRetries = $config['max_retries'] ?? 5;
         try {
             $response = $this->httpClient->request('GET', $site->getUrl(), ['max_duration' => 10]);
 
@@ -41,6 +39,8 @@ class IsUpChecker implements Checker, ConfigurableChecker
             }
         } catch (\Exception $e) {
             if ($maxRetries > 1) {
+                $this->logger->info('Check failed, retrying...', ['site' => $site->getName(), 'url' => $site->getUrl()]);
+
                 sleep(5);
 
                 return $this->check($site, array_merge($config, ['max_retries' => --$maxRetries]));

@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\HasTimestampImpl;
-use App\Checker\CheckResult;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Sluggable\Util\Urlizer;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -51,21 +47,21 @@ class Site implements HasTimestamp
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
-    private string $name;
+    private ?string $name;
 
     /**
      * @Groups({"get_sites", "get_site", "get_run"})
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(type="string")
      */
-    private string $slug;
+    private ?string $slug = null;
 
     /**
      * @Groups({"get_sites", "get_site", "get_run"})
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
-    private string $url;
+    private ?string $url;
 
     /**
      * @Groups({"get_site"})
@@ -76,10 +72,9 @@ class Site implements HasTimestamp
      */
     private /*Collection */$configuredChecks;
 
-    public function __construct(string $name, string $url)
+    public function __construct(string $name = null, string $url = null)
     {
         $this->id               = Uuid::uuid4();
-        $this->slug             = Urlizer::urlize($name);
         $this->name             = $name;
         $this->url              = $url;
         $this->configuredChecks = new ArrayCollection;
@@ -92,29 +87,34 @@ class Site implements HasTimestamp
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    public function setUrl(string $url): void
+    public function setUrl(?string $url): void
     {
         $this->url = $url;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
+    }
+
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
     }
 
     /**
@@ -126,8 +126,8 @@ class Site implements HasTimestamp
         return $this->configuredChecks;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getName();
+        return $this->getName() ?: 'A site with no name';
     }
 }

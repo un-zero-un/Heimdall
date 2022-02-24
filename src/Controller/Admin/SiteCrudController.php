@@ -37,9 +37,4 @@ class SiteCrudController extends AbstractCrudController
     {
         return Site::class;
     }
-
-    public function createEntity(string $entityFqcn): Site
-    {
-        return new Site('', '');
-    }
 }
